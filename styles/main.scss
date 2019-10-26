@@ -1,0 +1,621 @@
+// @use 'functions' as *;  // tentative d'importation de scss pour split un peu les fichiers. apparemment ca marche ap
+
+
+// pour des raisons personnelles j'ai chopé des fonctions scss sur ces sites
+// https://css-tricks.com/snippets/sass/power-function/
+// https://css-tricks.com/snippets/sass/correctly-adding-unit-number/
+// https://css-tricks.com/snippets/sass/strip-unit-function/
+
+// trigo
+// https://www.unindented.org/blog/trigonometry-in-sass/
+// http://thesassway.com/advanced/inverse-trigonometric-functions-with-sass
+
+
+
+@function pi() {
+    @return 3.14159265359;
+}
+
+$default-threshold: pi()/180/20;
+
+@function fact($number) {
+    $value: 1;
+
+    @if $number>0 {
+        @for $i from 1 through $number {
+            $value: $value * $i;
+        }
+    }
+    
+    @return $value;
+}
+
+// stripping unit for px to ratio
+@function strip-unit($number) {
+    @if type-of($number)=='number'and not unitless($number) {
+        @return $number / ($number * 0 + 1);
+    }
+
+    @return $number;
+}
+
+
+// returns square root (needed for hypothenuse)
+@function sqrt($r) {
+    $x0: 1;
+    $x1: $x0;
+
+    @for $i from 1 through 10 {
+        $x1: $x0 - ($x0 * $x0 - abs($r)) / (2 * $x0);
+        $x0: $x1;
+    }
+
+    @return $x1;
+}
+
+@function pow($number, $exponent) {
+    $value: 1;
+
+    @if $exponent>0 {
+        @for $i from 1 through $exponent {
+            $value: $value * $number;
+        }
+    }
+
+    @return $value;
+}
+
+@function rad($angle) {
+    $unit: unit($angle);
+    $unitless: $angle / ($angle * 0 + 1);
+
+    // If the angle has 'deg' as unit, convert to radians.
+    @if $unit==deg {
+        $unitless: $unitless / 180 * pi();
+    }
+
+    @return $unitless;
+}
+
+@function sin($angle) {
+    $sin: 0;
+    $angle: rad($angle);
+
+    // Iterate a bunch of times.
+    @for $i from 0 through 10 {
+        $sin: $sin + pow(-1, $i) * pow($angle, (2 * $i + 1)) / fact(2 * $i + 1);
+    }
+
+    @return $sin;
+}
+
+@function cos($angle) {
+    $cos: 0;
+    $angle: rad($angle);
+
+    // Iterate a bunch of times.
+    @for $i from 0 through 10 {
+        $cos: $cos + pow(-1, $i) * pow($angle, 2 * $i) / fact(2 * $i);
+    }
+
+    @return $cos;
+}
+
+@function tan($angle) {
+    @return sin($angle) / cos($angle);
+}
+
+
+@function convert-angle($value, $unit-name) {
+    $factors: (rad: 1rad,
+            deg: 180deg/pi(),
+            grad: 200grad/pi(),
+            turn: .5turn/pi());
+
+    @if not unitless($value) {
+        @warn '`#{$value}` should be unitless';
+        @return false;
+    }
+
+    @if not map-has-key($factors, $unit-name) {
+        @warn 'unit `#{$unit-name}` is not a valid unit - please make sure it is either `deg`, `rad`, `grad` or `turn`';
+        @return false;
+    }
+
+    @return $value*map-get($factors, $unit-name);
+}
+
+@function asin($z, $unit-name: deg, $threshold: $default-threshold) {
+    $sum: 0;
+    $complement: false;
+    $sign: if($z !=0, $z/abs($z), 1);
+    $z: abs($z);
+
+    @if $z>1 {
+        @warn 'illegal `#{$z}` value for function';
+        @return false;
+    }
+
+    @if $z>sin(pi()/4) {
+        $complement: true;
+        $z: sqrt(1 - pow($z, 2));
+    }
+
+    $term: $z;
+    $i: 0;
+    $k: 1;
+
+    @while $term>$threshold {
+        $sum: $sum + $term;
+
+        $i: $i + 1;
+        $k: $k*(2*$i - 1)/(2*$i);
+        $j: 2*$i + 1;
+
+        $term: $k*pow($z, $j)/$j;
+    }
+
+    @return convert-angle($sign*(if($complement, pi()/2 - $sum, $sum)), $unit-name);
+}
+
+@function acos($z, $unit-name: deg, $threshold: $default-threshold) {
+    @return convert-angle(pi()/2, $unit-name) - asin($z, $unit-name, $threshold);
+}
+
+@function atan($z, $unit-name: deg, $threshold: $default-threshold) {
+    @return asin($z/sqrt(1 + pow($z, 2)), $unit-name, $threshold);
+}
+
+// LE MOT CLE C'EST  M O D U L A B I L I T E 
+// always width * length * height
+
+// changer ces valeurs change tout le piano
+// maintenant comment les changer dynamiquement sachant qu'elles disparaissent lorsqu'elles sont processed en css.
+// PETIT A (a) : tout refaire avec des variables css MAIS ca peut pas marcher parce que j'ai besoin des fonctions au dessus qui ne peuvent pas exister en css
+// PETIT B (b) : exporter toutes les variables vers du js et les set manuellement (chiant, long, peu efficace)
+// PETIT C (c) : abandonner l'idée de changer la taille du piano en live et ca me foutrait bien le seum d'avoir tout fait archi modulable pour quasiment rien.
+// PETIT D (d) : ???
+$kb-final-width : 770px;
+$kb-final-length :300px;
+$kb-final-height : 110px;
+
+$kb-under-width:$kb-final-width;
+$kb-under-length:$kb-final-length;
+$kb-under-height:20px;
+
+$kb-tile-to-main-ratio : 0.57;
+$kb-main-length :$kb-final-length*$kb-tile-to-main-ratio; // valeur arbitraire pour que ca soit joli :)
+$kb-main-lg-height: $kb-final-height - $kb-under-height;
+
+// ON MODULE ON MODULE
+$kb-sides-height : $kb-final-height - $kb-under-height;
+$kb-sides-lg-height : $kb-main-lg-height;
+$kb-sides-sm-height : 30px;
+$kb-sides-diff : $kb-sides-lg-height - $kb-sides-sm-height;
+$kb-sides-ratio : strip-unit($kb-sides-sm-height / $kb-sides-lg-height); // ratio entre petit coté / long coté
+$kb-sides-ratio : ((1 - $kb-sides-ratio) * 100)+0%; // transformation en pourcentage
+$kb-sides-width : 50px;
+$kb-sides-length :$kb-final-length;
+$kb-sides-hypothenuse : sqrt(strip-unit(pow($kb-sides-length, 2) + pow($kb-sides-diff, 2)))+0px; // les maths sont énervés / le trapèze est controlé huh
+$kb-sides-cos : strip-unit($kb-sides-diff / $kb-sides-hypothenuse);
+$kb-sides-angle : acos($kb-sides-cos, deg, $default-threshold);
+
+// $kb-tiles-height : 100px;
+// $kb-tiles-width : 800px;
+$kb-tiles-length :$kb-final-length - $kb-main-length;
+
+//on doit le mettre apres pour le scss sinon voila
+// la hauteur du petit coté de la base principale. encore besoin de trigo pour le calculer
+$kb-main-width : $kb-final-width - (2*$kb-sides-width);
+$kb-main-sm-height : $kb-main-lg-height - $kb-main-length / tan($kb-sides-angle);
+$kb-main-diff : $kb-main-lg-height - $kb-main-sm-height;
+$kb-main-ratio : strip-unit($kb-main-sm-height / $kb-main-lg-height); // ratio entre petit coté / long coté
+$kb-main-ratio : ((1 - $kb-main-ratio) * 100)+0%; // transformation en pourcentage
+$kb-main-angle : $kb-sides-angle;
+$kb-main-hypothenuse : sqrt(strip-unit(pow($kb-main-length, 2) + pow($kb-main-diff, 2)))+0px; // les maths sont énervés / le trapèze est controlé huh
+
+$kb-whiteTiles-count : 21;
+$kb-whiteTiles-spacing : 2px;
+
+$kb-whiteTile-height : 15px;
+$kb-whiteTile-width : 30px;
+$kb-whiteTile-length :$kb-final-length - $kb-main-length;
+
+$kb-whiteTiles-side-spacing : ($kb-main-width - ($kb-whiteTiles-count * ($kb-whiteTile-width + $kb-whiteTiles-spacing))) / 2;
+
+// bon ca serait trop simple si les touches noires étaient des rectangels
+$kb-blackTile-height : 20px;
+$kb-blackTile-width : 15px;
+$kb-blackTile-lg-length :$kb-whiteTile-length*0.6;
+$kb-blackTile-sm-length : $kb-blackTile-lg-length - 15;
+$kb-blackTile-length-diff : $kb-blackTile-lg-length - $kb-blackTile-sm-length;
+$kb-blackTile-ratio : strip-unit($kb-blackTile-sm-length / $kb-blackTile-lg-length); // ratio entre petit coté / long coté
+$kb-blackTile-ratio : (($kb-blackTile-ratio) * 100)+0%; // transformation en pourcentage
+$kb-blackTile-hypothenuse : sqrt(strip-unit(pow($kb-blackTile-height, 2) + pow($kb-blackTile-length-diff, 2))) + 0px;
+$kb-blackTile-tan : strip-unit($kb-blackTile-length-diff / $kb-blackTile-height) ; // calcul de la tangente
+$kb-blackTile-angle : atan($kb-blackTile-tan, deg, $default-threshold);
+$kb-blackTiles-count :15;
+
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', 'Arial', sans-serif;
+    font-size: 14px;
+    color: #444;
+    overflow: hidden;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.top-view {
+    animation: top-view 0.6s ease-in-out;
+}
+
+.cont {
+    color: $kb-blackTile-ratio; // testing
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+
+    * {
+        transform-style: preserve-3d;
+    }
+
+    .keyboardBody {
+        pointer-events: none;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        // background: grey;
+        perspective: 800px;
+
+        .kb-anim-wrapper {
+            animation-fill-mode: both;
+            transform: rotateX(-30deg);
+
+            .kb-under {
+
+                .kb {
+                    position: absolute;
+                    background-color: grey;
+                    opacity: 0.6;
+                    border: 1px solid white;
+
+                    // front and back (1000 * 100)
+                    &-zpos {
+                        top: calc(#{$kb-under-height} / -2);
+                        left: calc(#{$kb-under-width} / -2);
+                        width: $kb-under-width;
+                        height: $kb-under-height;
+                        transform: rotateX(0deg) translateZ(calc(#{$kb-under-length} / 2));
+                    }
+
+                    &-zneg {
+                        top: calc(#{$kb-under-height} / -2);
+                        left: calc(#{$kb-under-width} / -2);
+                        width: $kb-under-width;
+                        height: $kb-under-height;
+                        transform: rotateX(180deg) translateZ(calc(#{$kb-under-length} / 2));
+                    }
+
+                    // left and right ( 200 * 100)
+                    &-xpos {
+                        top: calc(#{$kb-under-height} / -2);
+                        left: calc(#{$kb-under-length} / -2);
+                        width: $kb-under-length;
+                        height: $kb-under-height;
+                        transform: rotateY(90deg) translateZ(calc(#{$kb-under-width} / 2));
+                    }
+
+                    &-xneg {
+                        top: calc(#{$kb-under-height} / -2);
+                        left: calc(#{$kb-under-length} / -2);
+                        width: $kb-under-length;
+                        height: $kb-under-height;
+                        transform: rotateY(-90deg) translateZ(calc(#{$kb-under-width} / 2));
+                    }
+
+                    // top and bottom ( 1000 * 200)
+                    &-yneg {
+                        top: calc(#{$kb-under-length} / -2);
+                        left: calc(#{$kb-under-width} / -2);
+                        width: $kb-under-width;
+                        height: $kb-under-length;
+                        transform: rotateX(-90deg) translateZ(calc(#{$kb-under-height} / 2));
+                    }
+
+                    &-ypos {
+                        top: calc(#{$kb-under-length} / -2);
+                        left: calc(#{$kb-under-width} / -2);
+                        width: $kb-under-width;
+                        height: $kb-under-length;
+                        transform: rotateX(90deg) translateZ(calc(#{$kb-under-height} / 2));
+                    }
+                }
+            }
+
+            // trapeze :
+            .kb-main {
+                text-align: center;
+                color: white;
+                transform:translateZ(-#{$kb-final-length / 2 - $kb-main-length / 2}) translateY(-#{$kb-final-height / 2});
+
+                .kb {
+                    position: absolute;
+                    background-color: black;
+                    opacity: 0.6;
+                    border: 1px solid white;
+
+                    &-zpos {
+                        top: calc(#{$kb-main-sm-height} / -2 + #{$kb-main-diff / 2});
+                        left: calc(#{$kb-main-width} / -2);
+                        width: $kb-main-width;
+                        height: $kb-main-sm-height;
+                        transform: rotateX(0deg) translateZ(calc(#{$kb-main-length} / 2));
+                    }
+
+                    &-zneg {
+                        top: calc(#{$kb-main-lg-height} / -2);
+                        left: calc(#{$kb-main-width} / -2);
+                        width: $kb-main-width;
+                        height: $kb-main-lg-height;
+                        transform: rotateX(180deg) translateZ(calc(#{$kb-main-length} / 2));
+                    }
+
+                    // left and right ( 200 * 100)
+                    &-xpos {
+                        top: calc(#{$kb-main-lg-height} / -2);
+                        left: calc(#{$kb-main-length} / -2);
+                        width: $kb-main-length;
+                        height: $kb-main-lg-height;
+                        transform: rotateY(-90deg) translateZ(calc(#{$kb-main-width} / -2));
+                        clip-path: polygon(0 0, 100% #{$kb-main-ratio}, 100% 100%, 0 100%);
+                    }
+
+                    &-xneg {
+                        top: calc(#{$kb-main-lg-height} / -2);
+                        left: calc(#{$kb-main-length} / -2);
+                        width: $kb-main-length;
+                        height: $kb-main-lg-height;
+                        transform: rotateY(-90deg) translateZ(calc(#{$kb-main-width} / 2));
+                        clip-path: polygon(0 0, 100% #{$kb-main-ratio}, 100% 100%, 0 100%);
+                    }
+
+                    // top and bottom ( 1000 * 200)
+                    &-yneg {
+                        top: calc(#{$kb-main-length} / -2);
+                        left: calc(#{$kb-main-width} / -2);
+                        width: $kb-main-width;
+                        height: $kb-main-length;
+                        transform: rotateX(-90deg) translateZ(calc(#{$kb-main-lg-height} / 2));
+                    }
+
+                    &-ypos {
+                        top: calc(#{$kb-main-hypothenuse} / -2);
+                        left: calc(#{$kb-main-width} / -2);
+                        width: $kb-main-width;
+                        height: $kb-main-hypothenuse;
+                        transform: translateY(#{-($kb-main-sm-height / 2)}) rotateX($kb-main-angle);
+                    }
+                }
+
+            }
+
+            .kb-sides {
+
+                &.kb-sides-right {
+                    transform: translateX(#{$kb-final-width / 2 - $kb-sides-width /2}) translateY(calc(-#{$kb-final-height / 2}));
+                }
+
+                &.kb-sides-left {
+                    transform: translateX(-#{$kb-final-width / 2 - $kb-sides-width /2}) translateY(calc(-#{$kb-final-height / 2}));
+                }
+
+                .kb {
+                    position: absolute;
+                    background-color: black;
+                    opacity: 0.6;
+                    border: 1px solid white;
+
+                    &-zpos {
+                        top: calc(#{$kb-sides-sm-height} / -2 + #{$kb-sides-diff / 2});
+                        left: calc(#{$kb-sides-width} / -2);
+                        width: $kb-sides-width;
+                        height: $kb-sides-sm-height;
+                        transform: rotateX(0deg) translateZ(calc(#{$kb-sides-length} / 2));
+                    }
+
+                    &-zneg {
+                        top: calc(#{$kb-sides-lg-height} / -2);
+                        left: calc(#{$kb-sides-width} / -2);
+                        width: $kb-sides-width;
+                        height: $kb-sides-lg-height;
+                        transform: rotateX(180deg) translateZ(calc(#{$kb-sides-length} / 2));
+                    }
+
+                    // left and right ( 200 * 100)
+                    &-xpos {
+                        top: calc(#{$kb-sides-lg-height} / -2);
+                        left: calc(#{$kb-sides-length} / -2);
+                        width: $kb-sides-length;
+                        height: $kb-sides-lg-height;
+                        transform: rotateY(-90deg) translateZ(calc(#{$kb-sides-width} / -2));
+                        clip-path: polygon(0 0, 100% #{$kb-sides-ratio}, 100% 100%, 0 100%);
+                    }
+
+                    &-xneg {
+                        top: calc(#{$kb-sides-lg-height} / -2);
+                        left: calc(#{$kb-sides-length} / -2);
+                        width: $kb-sides-length;
+                        height: $kb-sides-lg-height;
+                        transform: rotateY(-90deg) translateZ(calc(#{$kb-sides-width} / 2));
+                        clip-path: polygon(0 0, 100% #{$kb-sides-ratio}, 100% 100%, 0 100%);
+                    }
+
+                    // top and bottom ( 1000 * 200)
+                    &-yneg {
+                        top: calc(#{$kb-sides-length} / -2);
+                        left: calc(#{$kb-sides-width} / -2);
+                        width: $kb-sides-width;
+                        height: $kb-sides-length;
+                        transform: rotateX(-90deg) translateZ(calc(#{$kb-sides-height} / 2));
+                    }
+
+                    &-ypos {
+                        top: calc(#{$kb-sides-hypothenuse} / -2);
+                        left: calc(#{$kb-sides-width} / -2);
+                        width: $kb-sides-width;
+                        height: $kb-sides-hypothenuse;
+                        // pourquoi cette valeur ? je sais meme plus
+                        transform: translateY(#{-($kb-sides-sm-height) / 2}) rotateX($kb-sides-angle);
+                    }
+                }
+            }
+
+            .kb-tiles {
+
+                .kb-tile {
+                    transform-origin: center;
+                    .kb {
+                        position: absolute;
+                        background-color: white;
+                        opacity: 0.6;
+                        border: 1px solid black;
+                    }
+                }
+
+                &.tiles-white {
+                    transform : translateZ(#{$kb-final-length / 2 - $kb-tiles-length / 2}) translateY(-#{$kb-final-height / 2 - $kb-under-height}) translateX(#{(-$kb-main-width / 2 + $kb-whiteTile-width / 2)+$kb-whiteTiles-side-spacing});
+
+                    .kb-tile{    
+
+                        .kb {
+                            &-zpos {
+                                top: calc(#{$kb-whiteTile-height} / -2);
+                                left: calc(#{$kb-whiteTile-width} / -2);
+                                width: $kb-whiteTile-width;
+                                height: $kb-whiteTile-height;
+                                transform: rotateX(0deg) translateZ(calc(#{$kb-whiteTile-length} / 2));
+                            }
+    
+                            &-zneg {
+                                top: calc(#{$kb-whiteTile-height} / -2);
+                                left: calc(#{$kb-whiteTile-width} / -2);
+                                width: $kb-whiteTile-width;
+                                height: $kb-whiteTile-height;
+                                transform: rotateX(180deg) translateZ(calc(#{$kb-whiteTile-length} / 2));
+                            }
+    
+                            // left and right ( 200 * 100)
+                            &-xpos {
+                                top: calc(#{$kb-whiteTile-height} / -2);
+                                left: calc(#{$kb-whiteTile-length} / -2);
+                                width: $kb-whiteTile-length;
+                                height: $kb-whiteTile-height;
+                                transform: rotateY(90deg) translateZ(calc(#{$kb-whiteTile-width} / 2));
+                            }
+    
+                            &-xneg {
+                                top: calc(#{$kb-whiteTile-height} / -2);
+                                left: calc(#{$kb-whiteTile-length} / -2);
+                                width: $kb-whiteTile-length;
+                                height: $kb-whiteTile-height;
+                                transform: rotateY(-90deg) translateZ(calc(#{$kb-whiteTile-width} / 2));
+                            }
+    
+                            // top and bottom ( 1000 * 200)
+                            &-yneg {
+                                top: calc(#{$kb-whiteTile-length} / -2);
+                                left: calc(#{$kb-whiteTile-width} / -2);
+                                width: $kb-whiteTile-width;
+                                height: $kb-whiteTile-length;
+                                transform: rotateX(-90deg) translateZ(calc(#{$kb-whiteTile-height} / 2));
+                            }
+    
+                            &-ypos {
+                                top: calc(#{$kb-whiteTile-length} / -2);
+                                left: calc(#{$kb-whiteTile-width} / -2);
+                                width: $kb-whiteTile-width;
+                                height: $kb-whiteTile-length;
+                                transform: rotateX(90deg) translateZ(calc(#{$kb-whiteTile-height} / 2));
+                            }
+                        }
+                    }
+                }
+
+                &.tiles-black {
+                    //  à ajuster
+                    transform : translateZ(#{$kb-tile-to-main-ratio * 100 }px) translateY(-#{($kb-final-height / 2 - $kb-under-height) + $kb-whiteTile-height / 2}) translateX(#{(-$kb-main-width / 2 + $kb-blackTile-width / 2)}); 
+
+                    .kb-tile {
+                        .kb {
+                            background-color: black;
+                            opacity: 0.8;
+                            border : 1px solid white;
+
+                            &-zpos {
+                                top: calc(#{$kb-blackTile-hypothenuse} / -2);
+                                left: calc(#{$kb-blackTile-width} / -2);
+                                width: $kb-blackTile-width;
+                                height: $kb-blackTile-hypothenuse;
+                                transform: translateZ(#{($kb-blackTile-lg-length / 2) - $kb-blackTile-length-diff / 2} ) rotateX($kb-blackTile-angle);
+                            }
+
+                            &-zneg {
+                                top: calc(#{$kb-blackTile-height} / -2);
+                                left: calc(#{$kb-blackTile-width} / -2);
+                                width: $kb-blackTile-width;
+                                height: $kb-blackTile-height;
+                                transform: rotateX(180deg) translateZ(calc(#{$kb-blackTile-lg-length} / 2));
+                            }
+
+                            // left and right ( 200 * 100)
+                            &-xpos {
+                                top: calc(#{$kb-blackTile-height} / -2);
+                                left: calc(#{$kb-blackTile-lg-length} / -2);
+                                width: $kb-blackTile-lg-length;
+                                height: $kb-blackTile-height;
+                                transform: rotateY(-90deg) translateZ(calc(#{$kb-blackTile-width} / -2));
+                                clip-path: polygon(0 0, #{$kb-blackTile-ratio} 0, 100% 100%, 0% 100%);
+
+                            }
+
+                            &-xneg {
+                                top: calc(#{$kb-blackTile-height} / -2);
+                                left: calc(#{$kb-blackTile-lg-length} / -2);
+                                width: $kb-blackTile-lg-length;
+                                height: $kb-blackTile-height;
+                                transform: rotateY(-90deg) translateZ(calc(#{$kb-blackTile-width} / 2));
+                                clip-path: polygon(0 0, #{$kb-blackTile-ratio} 0, 100% 100%, 0% 100%);
+                            }
+
+                            // top and bottom ( 1000 * 200)
+                            &-yneg {
+                                top: calc(#{$kb-blackTile-lg-length} / -2);
+                                left: calc(#{$kb-blackTile-width} / -2);
+                                width: $kb-blackTile-width;
+                                height: $kb-blackTile-lg-length;
+                                transform: rotateX(-90deg) translateZ(calc(#{$kb-blackTile-height} / 2));
+                            }
+
+                            &-ypos {
+                                top: calc(#{$kb-blackTile-sm-length} / -2);
+                                left: calc(#{$kb-blackTile-width} / -2);
+                                width: $kb-blackTile-width;
+                                height: $kb-blackTile-sm-length;
+                                transform: rotateX(90deg) translateZ(#{$kb-blackTile-height / 2}) translateY(#{ - ($kb-blackTile-lg-length - $kb-blackTile-sm-length) / 2});
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        // 920 * 300 * 20
+    }
+}
+

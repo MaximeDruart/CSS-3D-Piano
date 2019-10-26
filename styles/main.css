@@ -1,0 +1,256 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', 'Arial', sans-serif;
+  font-size: 14px;
+  color: #444;
+  overflow: hidden; }
+
+* {
+  box-sizing: border-box; }
+
+.top-view {
+  animation: top-view 0.6s ease-in-out; }
+
+.cont {
+  color: 80.6201550388%;
+  position: relative;
+  width: 100vw;
+  height: 100vh; }
+  .cont * {
+    transform-style: preserve-3d; }
+  .cont .keyboardBody {
+    pointer-events: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    perspective: 800px; }
+    .cont .keyboardBody .kb-anim-wrapper {
+      animation-fill-mode: both;
+      transform: rotateX(-30deg); }
+      .cont .keyboardBody .kb-anim-wrapper .kb-under .kb {
+        position: absolute;
+        background-color: grey;
+        opacity: 0.6;
+        border: 1px solid white; }
+        .cont .keyboardBody .kb-anim-wrapper .kb-under .kb-zpos {
+          top: calc(20px / -2);
+          left: calc(770px / -2);
+          width: 770px;
+          height: 20px;
+          transform: rotateX(0deg) translateZ(calc(300px / 2)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-under .kb-zneg {
+          top: calc(20px / -2);
+          left: calc(770px / -2);
+          width: 770px;
+          height: 20px;
+          transform: rotateX(180deg) translateZ(calc(300px / 2)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-under .kb-xpos {
+          top: calc(20px / -2);
+          left: calc(300px / -2);
+          width: 300px;
+          height: 20px;
+          transform: rotateY(90deg) translateZ(calc(770px / 2)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-under .kb-xneg {
+          top: calc(20px / -2);
+          left: calc(300px / -2);
+          width: 300px;
+          height: 20px;
+          transform: rotateY(-90deg) translateZ(calc(770px / 2)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-under .kb-yneg {
+          top: calc(300px / -2);
+          left: calc(770px / -2);
+          width: 770px;
+          height: 300px;
+          transform: rotateX(-90deg) translateZ(calc(20px / 2)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-under .kb-ypos {
+          top: calc(300px / -2);
+          left: calc(770px / -2);
+          width: 770px;
+          height: 300px;
+          transform: rotateX(90deg) translateZ(calc(20px / 2)); }
+      .cont .keyboardBody .kb-anim-wrapper .kb-main {
+        text-align: center;
+        color: white;
+        transform: translateZ(-64.5px) translateY(-55px); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-main .kb {
+          position: absolute;
+          background-color: black;
+          opacity: 0.6;
+          border: 1px solid white; }
+          .cont .keyboardBody .kb-anim-wrapper .kb-main .kb-zpos {
+            top: calc(55.8918669739px / -2 + 17.0540665131px);
+            left: calc(670px / -2);
+            width: 670px;
+            height: 55.8918669739px;
+            transform: rotateX(0deg) translateZ(calc(171px / 2)); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-main .kb-zneg {
+            top: calc(90px / -2);
+            left: calc(670px / -2);
+            width: 670px;
+            height: 90px;
+            transform: rotateX(180deg) translateZ(calc(171px / 2)); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-main .kb-xpos {
+            top: calc(90px / -2);
+            left: calc(171px / -2);
+            width: 171px;
+            height: 90px;
+            transform: rotateY(-90deg) translateZ(calc(670px / -2));
+            clip-path: polygon(0 0, 100% 37.8979255846%, 100% 100%, 0 100%); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-main .kb-xneg {
+            top: calc(90px / -2);
+            left: calc(171px / -2);
+            width: 171px;
+            height: 90px;
+            transform: rotateY(-90deg) translateZ(calc(670px / 2));
+            clip-path: polygon(0 0, 100% 37.8979255846%, 100% 100%, 0 100%); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-main .kb-yneg {
+            top: calc(171px / -2);
+            left: calc(670px / -2);
+            width: 670px;
+            height: 171px;
+            transform: rotateX(-90deg) translateZ(calc(90px / 2)); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-main .kb-ypos {
+            top: calc(174.3712381242px / -2);
+            left: calc(670px / -2);
+            width: 670px;
+            height: 174.3712381242px;
+            transform: translateY(-27.9459334869px) rotateX(78.7196679155deg); }
+      .cont .keyboardBody .kb-anim-wrapper .kb-sides.kb-sides-right {
+        transform: translateX(360px) translateY(calc(-55px)); }
+      .cont .keyboardBody .kb-anim-wrapper .kb-sides.kb-sides-left {
+        transform: translateX(-360px) translateY(calc(-55px)); }
+      .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb {
+        position: absolute;
+        background-color: black;
+        opacity: 0.6;
+        border: 1px solid white; }
+        .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-zpos {
+          top: calc(30px / -2 + 30px);
+          left: calc(50px / -2);
+          width: 50px;
+          height: 30px;
+          transform: rotateX(0deg) translateZ(calc(300px / 2)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-zneg {
+          top: calc(90px / -2);
+          left: calc(50px / -2);
+          width: 50px;
+          height: 90px;
+          transform: rotateX(180deg) translateZ(calc(300px / 2)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-xpos {
+          top: calc(90px / -2);
+          left: calc(300px / -2);
+          width: 300px;
+          height: 90px;
+          transform: rotateY(-90deg) translateZ(calc(50px / -2));
+          clip-path: polygon(0 0, 100% 66.6666666667%, 100% 100%, 0 100%); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-xneg {
+          top: calc(90px / -2);
+          left: calc(300px / -2);
+          width: 300px;
+          height: 90px;
+          transform: rotateY(-90deg) translateZ(calc(50px / 2));
+          clip-path: polygon(0 0, 100% 66.6666666667%, 100% 100%, 0 100%); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-yneg {
+          top: calc(300px / -2);
+          left: calc(50px / -2);
+          width: 50px;
+          height: 300px;
+          transform: rotateX(-90deg) translateZ(calc(90px / 2)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-ypos {
+          top: calc(306.6997240462px / -2);
+          left: calc(50px / -2);
+          width: 50px;
+          height: 306.6997240462px;
+          transform: translateY(-15px) rotateX(78.7196679155deg); }
+      .cont .keyboardBody .kb-anim-wrapper .kb-tiles .kb-tile {
+        transform-origin: center; }
+        .cont .keyboardBody .kb-anim-wrapper .kb-tiles .kb-tile .kb {
+          position: absolute;
+          background-color: white;
+          opacity: 0.6;
+          border: 1px solid black; }
+      .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-white {
+        transform: translateZ(85.5px) translateY(-35px) translateX(-321px); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-white .kb-tile .kb-zpos {
+          top: calc(15px / -2);
+          left: calc(30px / -2);
+          width: 30px;
+          height: 15px;
+          transform: rotateX(0deg) translateZ(calc(129px / 2)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-white .kb-tile .kb-zneg {
+          top: calc(15px / -2);
+          left: calc(30px / -2);
+          width: 30px;
+          height: 15px;
+          transform: rotateX(180deg) translateZ(calc(129px / 2)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-white .kb-tile .kb-xpos {
+          top: calc(15px / -2);
+          left: calc(129px / -2);
+          width: 129px;
+          height: 15px;
+          transform: rotateY(90deg) translateZ(calc(30px / 2)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-white .kb-tile .kb-xneg {
+          top: calc(15px / -2);
+          left: calc(129px / -2);
+          width: 129px;
+          height: 15px;
+          transform: rotateY(-90deg) translateZ(calc(30px / 2)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-white .kb-tile .kb-yneg {
+          top: calc(129px / -2);
+          left: calc(30px / -2);
+          width: 30px;
+          height: 129px;
+          transform: rotateX(-90deg) translateZ(calc(15px / 2)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-white .kb-tile .kb-ypos {
+          top: calc(129px / -2);
+          left: calc(30px / -2);
+          width: 30px;
+          height: 129px;
+          transform: rotateX(90deg) translateZ(calc(15px / 2)); }
+      .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-black {
+        transform: translateZ(57px) translateY(-42.5px) translateX(-327.5px); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-black .kb-tile .kb {
+          background-color: black;
+          opacity: 0.8;
+          border: 1px solid white; }
+          .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-black .kb-tile .kb-zpos {
+            top: calc(25px / -2);
+            left: calc(15px / -2);
+            width: 15px;
+            height: 25px;
+            transform: translateZ(31.2px) rotateX(36.8458681106deg); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-black .kb-tile .kb-zneg {
+            top: calc(20px / -2);
+            left: calc(15px / -2);
+            width: 15px;
+            height: 20px;
+            transform: rotateX(180deg) translateZ(calc(77.4px / 2)); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-black .kb-tile .kb-xpos {
+            top: calc(20px / -2);
+            left: calc(77.4px / -2);
+            width: 77.4px;
+            height: 20px;
+            transform: rotateY(-90deg) translateZ(calc(15px / -2));
+            clip-path: polygon(0 0, 80.6201550388% 0, 100% 100%, 0% 100%); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-black .kb-tile .kb-xneg {
+            top: calc(20px / -2);
+            left: calc(77.4px / -2);
+            width: 77.4px;
+            height: 20px;
+            transform: rotateY(-90deg) translateZ(calc(15px / 2));
+            clip-path: polygon(0 0, 80.6201550388% 0, 100% 100%, 0% 100%); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-black .kb-tile .kb-yneg {
+            top: calc(77.4px / -2);
+            left: calc(15px / -2);
+            width: 15px;
+            height: 77.4px;
+            transform: rotateX(-90deg) translateZ(calc(20px / 2)); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-black .kb-tile .kb-ypos {
+            top: calc(62.4px / -2);
+            left: calc(15px / -2);
+            width: 15px;
+            height: 62.4px;
+            transform: rotateX(90deg) translateZ(10px) translateY(-7.5px); }
+
+/*# sourceMappingURL=main.css.map */
