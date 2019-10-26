@@ -4,13 +4,16 @@ let firstRunX = 0, firstRunY = 0
 let isHolding = false, firstRun = true
 let maxRotation = 180
 let mousex, mousey
+let speedX, speedY
 
 
 document.addEventListener('mousedown', event => {
     // on détecte que la souris est enfoncé et stocke les positions initiales du curseur
-    isHolding = true
-    mousex = event.x
-    mousey = event.y
+    if (event.button == 0) {        
+        isHolding = true
+        mousex = event.x
+        mousey = event.y
+    }
 })
 
 document.addEventListener('mousemove', event => {
@@ -23,6 +26,8 @@ document.addEventListener('mousemove', event => {
         // on applique ensuite ces valeurs.
         TweenMax.to(wrap, 0.1,  {rotationX : firstRunX, rotationY : firstRunY })
     }
+    speedX = event.movementX
+    speedY = event.movementY
 })
 
 document.addEventListener('mouseup', event => {
@@ -33,6 +38,10 @@ document.addEventListener('mouseup', event => {
     firstRunX = 0
     isHolding = false
 })
+
+function inertia(x, y){
+    
+}
 
 
 document.addEventListener('wheel', event => {
@@ -64,6 +73,7 @@ document.addEventListener('keydown', (e) => {
     TweenMax.to(wrap, 0.1,  {rotationX : x, rotationY : y })
     // wrap.style.transform = `rotateY(${y}deg) rotateX(${x}deg)`
 })
+
 
 // let els = document.querySelectorAll(".kb")
 // let tl = new TimelineMax()
