@@ -262,6 +262,7 @@ body {
 
     * {
         transform-style: preserve-3d;
+        user-select: none; // sinon on peut highlight le texte et ca fout bien la merde
     }
 
     .keyboardBody {

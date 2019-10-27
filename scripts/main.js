@@ -5,15 +5,19 @@ let isHolding = false, firstRun = true
 let maxRotation = 180
 let mousex, mousey
 let speedX, speedY
+let keymappingOn = false
+let wireframeView = false
 
 
-document.addEventListener('mousedown', event => {
+document.querySelector(".cont:not(.ui)").addEventListener('mousedown', event => {
 	// on détecte que la souris est enfoncé et stocke les positions initiales du curseur
-	// faut appuyer sur la roue
-    if (event.button == 1) {        
+	// clic gauche ou roue
+    if (event.button == 0 || event.button == 1) {        
         isHolding = true
         mousex = event.x
-        mousey = event.y
+		mousey = event.y
+		firstRunY = y
+		firstRunX = x
     }
 })
 
@@ -33,11 +37,8 @@ document.addEventListener('mousemove', event => {
 
 document.addEventListener('mouseup', event => {
     // lorsque l'utilisateur relache le clic, on actualise nos valeurs x/y et reset nos valeurs temporaires.
-    // if (firstRunX !== x || firstRunY !== y ) {
-        
-    // }
     x = firstRunX
-    y = firstRunY
+	y = firstRunY
     firstRunY = 0
     firstRunX = 0
     isHolding = false
@@ -68,10 +69,20 @@ let wireframeTl = new TimelineMax({paused:true})
 wireframeTl.staggerTo(".kb", 0.3, {backgroundColor : "none", border:"1px solid black", stagger:0.01})
 
 document.querySelector(".wireframe-mode-btn").addEventListener('click', () => {
-    wireframeTl.play()
+	wireframeView = !wireframeView
+	wireframeView ? wireframeTl.play() : wireframeTl.reverse()
+	document.querySelector(".wireframe-mode-btn").innerText = wireframeView ? "STANDARD VIEW" : "WIREFRAME VIEW"
 })
-document.querySelector(".standard-mode-btn").addEventListener('click', () => {
-    wireframeTl.reverse()
+
+document.querySelector(".build-mode-btn").addEventListener('click', () => {
+	let buildTl = new TimelineMax({paused:true})
+	buildTl.staggerFrom(".kb", 0.3, {transform : "none", stagger:0.02})
+	buildTl.restart()
+})
+document.querySelector(".keymap-mode-btn").addEventListener('click', () => {
+	keymappingOn = !keymappingOn
+	keymapping(keymappingOn)
+	document.querySelector(".keymap-mode-btn").innerText = keymappingOn ? "HIDE KEY MAPPING" : "SHOW KEY MAPPING"
 })
 
 
@@ -117,26 +128,124 @@ whiteTiles.forEach((tile, index) => {
     }
 })
 
+let chars = 'azertyuiopqsdfghjklmw'
+let charsBlack = 'azetyiopsdghjlm'.toUpperCase()
+
+function keymapping(set = true) {
+	if (set) {
+		whiteTiles.forEach((tile, index) => {
+			// children[2] = face du dessus
+			tile.children[2].innerText = chars[index]
+		});
+		blackTiles.forEach((tile, index) => {
+			// children[2] = face du dessus
+			tile.children[2].innerText = charsBlack[index]
+		});
+	} else {
+		tiles.forEach(tile => {
+			tile.children[2].innerText = ""
+		})
+	}
+}
+
+
+
+
 let tileTl
-tiles.forEach((tile, index) => {
+let activeKeyTimelines = []
+function keyPress(tile){
+	let createNewTl = true
+	activeKeyTimelines.forEach( tl => {
+		if (tl.tile === tile) createNewTl = false
+	})
+	if (createNewTl) {		
+		tileTl = new TimelineMax()
+		tileTl.onComplete = tileTl.destroy
+		tileTl.to(tile, 0.25, {rotationX : "-6deg", y: "6px"})
+		tileTl.play()
+		let tempObj = {
+			tile : tile, 
+			timeline : tileTl
+		}
+		activeKeyTimelines.push(tempObj)
+	}
+}
+
+// clicking on tile
+tiles.forEach( tile => {
     // click animation
-    tile.addEventListener('click', () => {
-        tileTl = new TimelineMax({yoyo : true, repeat : 1})
-        tileTl.onComplete = tileTl.destroy
-        tileTl.to(tile, 0.25, {transformOrigin : "top left", rotationX : -7, y:+7})
-        tileTl.restart()
-    })
+    tile.addEventListener('mousedown', () => {
+		keyPress(tile)
+		console.log(activeKeyTimelines)
+	})
+	// releasing the tile
+	tile.addEventListener('mouseup', () => {
+		// for each timeline
+		activeKeyTimelines.forEach( (tl, index) => {
+			// if there's a timeline for the tile
+			if (tl.tile === tile) {
+				// reverse it
+				tl.timeline.reverse()
+				// and remove the timeline
+				activeKeyTimelines.splice(index, 1)
+			}
+		})
+	})
+	// or not hovering it anymore with the mouse
+	tile.addEventListener('mouseout', () => {
+		// for each timeline
+		activeKeyTimelines.forEach((tl, index) => {
+			// if there's a timeline for the tile
+			if (tl.tile === tile) {
+				// reverse it
+				tl.timeline.reverse()
+				// and remove the timeline
+				activeKeyTimelines.splice(index, 1)
+			}
+		})
+	})
+})
+
+
+// pressing keyboard key
+document.addEventListener('keydown', e => {
+	if (chars.indexOf(e.key) !== -1 ) {
+		keyPress(whiteTiles[chars.indexOf(e.key)])
+		// TODO : play sound
+	}
+	if (charsBlack.indexOf(e.key) !== -1) {	
+		keyPress(blackTiles[charsBlack.indexOf(e.key)])
+		// TODO : play sound
+	}
+})
+
+document.addEventListener('keyup', e => {
+
+	if (chars.indexOf(e.key) !== -1) {
+		activeKeyTimelines.forEach((tl, index) => {
+			// if there's a timeline for the tile
+			if (tl.tile === whiteTiles[chars.indexOf(e.key)]) {
+				// reverse it
+				tl.timeline.reverse()
+				// and remove the timeline
+				activeKeyTimelines.splice(index, 1)
+			}
+		})
+	}
+		
+	if (charsBlack.indexOf(e.key) !== -1) {
+		activeKeyTimelines.forEach((tl, index) => {
+			// if there's a timeline for the tile
+			if (tl.tile === blackTiles[charsBlack.indexOf(e.key)]) {
+				// reverse it
+				tl.timeline.reverse()
+				// and remove the timeline
+				activeKeyTimelines.splice(index, 1)
+			}
+		})
+	}
 })
 
 
 
-
-
-
-// let elements = document.querySelectorAll("elements")
-// elements.forEach( element => {
-//     element.addEventListener('event', () => {
-//         element.classList.remove("hidden")
-//     })
-// })
 
