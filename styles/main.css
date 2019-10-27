@@ -20,7 +20,6 @@ body {
   .cont * {
     transform-style: preserve-3d; }
   .cont .keyboardBody {
-    pointer-events: none;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -70,6 +69,7 @@ body {
           height: 300px;
           transform: rotateX(90deg) translateZ(calc(20px / 2)); }
       .cont .keyboardBody .kb-anim-wrapper .kb-main {
+        pointer-events: none;
         text-align: center;
         color: white;
         transform: translateZ(-64.5px) translateY(-55px); }
@@ -116,53 +116,55 @@ body {
             width: 670px;
             height: 174.3712381242px;
             transform: translateY(-27.9459334869px) rotateX(78.7196679155deg); }
-      .cont .keyboardBody .kb-anim-wrapper .kb-sides.kb-sides-right {
-        transform: translateX(360px) translateY(calc(-55px)); }
-      .cont .keyboardBody .kb-anim-wrapper .kb-sides.kb-sides-left {
-        transform: translateX(-360px) translateY(calc(-55px)); }
-      .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb {
-        position: absolute;
-        background-color: black;
-        opacity: 0.6;
-        border: 1px solid white; }
-        .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-zpos {
-          top: calc(30px / -2 + 30px);
-          left: calc(50px / -2);
-          width: 50px;
-          height: 30px;
-          transform: rotateX(0deg) translateZ(calc(300px / 2)); }
-        .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-zneg {
-          top: calc(90px / -2);
-          left: calc(50px / -2);
-          width: 50px;
-          height: 90px;
-          transform: rotateX(180deg) translateZ(calc(300px / 2)); }
-        .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-xpos {
-          top: calc(90px / -2);
-          left: calc(300px / -2);
-          width: 300px;
-          height: 90px;
-          transform: rotateY(-90deg) translateZ(calc(50px / -2));
-          clip-path: polygon(0 0, 100% 66.6666666667%, 100% 100%, 0 100%); }
-        .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-xneg {
-          top: calc(90px / -2);
-          left: calc(300px / -2);
-          width: 300px;
-          height: 90px;
-          transform: rotateY(-90deg) translateZ(calc(50px / 2));
-          clip-path: polygon(0 0, 100% 66.6666666667%, 100% 100%, 0 100%); }
-        .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-yneg {
-          top: calc(300px / -2);
-          left: calc(50px / -2);
-          width: 50px;
-          height: 300px;
-          transform: rotateX(-90deg) translateZ(calc(90px / 2)); }
-        .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-ypos {
-          top: calc(306.6997240462px / -2);
-          left: calc(50px / -2);
-          width: 50px;
-          height: 306.6997240462px;
-          transform: translateY(-15px) rotateX(78.7196679155deg); }
+      .cont .keyboardBody .kb-anim-wrapper .kb-sides {
+        pointer-events: none; }
+        .cont .keyboardBody .kb-anim-wrapper .kb-sides.kb-sides-right {
+          transform: translateX(360px) translateY(calc(-55px)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-sides.kb-sides-left {
+          transform: translateX(-360px) translateY(calc(-55px)); }
+        .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb {
+          position: absolute;
+          background-color: black;
+          opacity: 0.6;
+          border: 1px solid white; }
+          .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-zpos {
+            top: calc(30px / -2 + 30px);
+            left: calc(50px / -2);
+            width: 50px;
+            height: 30px;
+            transform: rotateX(0deg) translateZ(calc(300px / 2)); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-zneg {
+            top: calc(90px / -2);
+            left: calc(50px / -2);
+            width: 50px;
+            height: 90px;
+            transform: rotateX(180deg) translateZ(calc(300px / 2)); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-xpos {
+            top: calc(90px / -2);
+            left: calc(300px / -2);
+            width: 300px;
+            height: 90px;
+            transform: rotateY(-90deg) translateZ(calc(50px / -2));
+            clip-path: polygon(0 0, 100% 66.6666666667%, 100% 100%, 0 100%); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-xneg {
+            top: calc(90px / -2);
+            left: calc(300px / -2);
+            width: 300px;
+            height: 90px;
+            transform: rotateY(-90deg) translateZ(calc(50px / 2));
+            clip-path: polygon(0 0, 100% 66.6666666667%, 100% 100%, 0 100%); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-yneg {
+            top: calc(300px / -2);
+            left: calc(50px / -2);
+            width: 50px;
+            height: 300px;
+            transform: rotateX(-90deg) translateZ(calc(90px / 2)); }
+          .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-ypos {
+            top: calc(306.6997240462px / -2);
+            left: calc(50px / -2);
+            width: 50px;
+            height: 306.6997240462px;
+            transform: translateY(-15px) rotateX(78.7196679155deg); }
       .cont .keyboardBody .kb-anim-wrapper .kb-tiles .kb-tile {
         transform-origin: center; }
         .cont .keyboardBody .kb-anim-wrapper .kb-tiles .kb-tile .kb {

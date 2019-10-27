@@ -265,7 +265,6 @@ body {
     }
 
     .keyboardBody {
-        pointer-events: none;
         position: absolute;
         left: 50%;
         top: 50%;
@@ -339,6 +338,7 @@ body {
 
             // trapeze :
             .kb-main {
+                pointer-events: none;
                 text-align: center;
                 color: white;
                 transform:translateZ(-#{$kb-final-length / 2 - $kb-main-length / 2}) translateY(-#{$kb-final-height / 2});
@@ -405,6 +405,7 @@ body {
             }
 
             .kb-sides {
+                pointer-events: none;
 
                 &.kb-sides-right {
                     transform: translateX(#{$kb-final-width / 2 - $kb-sides-width /2}) translateY(calc(-#{$kb-final-height / 2}));

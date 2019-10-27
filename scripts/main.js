@@ -8,8 +8,9 @@ let speedX, speedY
 
 
 document.addEventListener('mousedown', event => {
-    // on détecte que la souris est enfoncé et stocke les positions initiales du curseur
-    if (event.button == 0) {        
+	// on détecte que la souris est enfoncé et stocke les positions initiales du curseur
+	// faut appuyer sur la roue
+    if (event.button == 1) {        
         isHolding = true
         mousex = event.x
         mousey = event.y
@@ -21,8 +22,8 @@ document.addEventListener('mousemove', event => {
         // lorsque la souris est enfoncé, on va ajouter / soustraire aux X/Y actuelles la différence entre la position initiale de la souris et sa position actuelle
         // axe inversé entre ceux de css 3d et ceux de la souris
         // l'axe rotationX va correspondre à l'axe Y de la souris et vice versa
-        firstRunY = y - (mousex - event.x) / 7
-        firstRunX = x + (mousey - event.y) / 5
+        firstRunY = y - ((mousex - event.x) / 7)
+        firstRunX = x + ((mousey - event.y) / 5)
         // on applique ensuite ces valeurs.
         TweenMax.to(wrap, 0.1,  {rotationX : firstRunX, rotationY : firstRunY })
     }
@@ -32,17 +33,15 @@ document.addEventListener('mousemove', event => {
 
 document.addEventListener('mouseup', event => {
     // lorsque l'utilisateur relache le clic, on actualise nos valeurs x/y et reset nos valeurs temporaires.
+    // if (firstRunX !== x || firstRunY !== y ) {
+        
+    // }
     x = firstRunX
     y = firstRunY
     firstRunY = 0
     firstRunX = 0
     isHolding = false
 })
-
-function inertia(x, y){
-    
-}
-
 
 document.addEventListener('wheel', event => {
     if (z>=minZ && z<maxZ) {
@@ -65,19 +64,24 @@ document.querySelector(".reset-view-btn").addEventListener('click', () => {
     TweenMax.to(wrap, 0.6, {rotationX : x, rotationY : y})
 })
 
+let wireframeTl = new TimelineMax({paused:true})
+wireframeTl.staggerTo(".kb", 0.3, {backgroundColor : "none", border:"1px solid black", stagger:0.01})
+
+document.querySelector(".wireframe-mode-btn").addEventListener('click', () => {
+    wireframeTl.play()
+})
+document.querySelector(".standard-mode-btn").addEventListener('click', () => {
+    wireframeTl.reverse()
+})
+
+
 document.addEventListener('keydown', (e) => {
     if (e.code == "ArrowDown") x+=5
     if (e.code == "ArrowUp") x -= 5
     if (e.code == "ArrowLeft") y += 5
     if (e.code == "ArrowRight") y -= 5
     TweenMax.to(wrap, 0.1,  {rotationX : x, rotationY : y })
-    // wrap.style.transform = `rotateY(${y}deg) rotateX(${x}deg)`
 })
-
-
-// let els = document.querySelectorAll(".kb")
-// let tl = new TimelineMax()
-// tl.staggerFrom(".kb", 0.6, {transform : "none"}, 0.1)
 
 
 let whiteTiles = document.querySelectorAll(".tiles-white .kb-tile")
@@ -119,7 +123,7 @@ tiles.forEach((tile, index) => {
     tile.addEventListener('click', () => {
         tileTl = new TimelineMax({yoyo : true, repeat : 1})
         tileTl.onComplete = tileTl.destroy
-        tileTl.to(tile, 0.5, {transformOrigin : "top left", rotationX : -20})
+        tileTl.to(tile, 0.25, {transformOrigin : "top left", rotationX : -7, y:+7})
         tileTl.restart()
     })
 })
@@ -135,3 +139,4 @@ tiles.forEach((tile, index) => {
 //         element.classList.remove("hidden")
 //     })
 // })
+
