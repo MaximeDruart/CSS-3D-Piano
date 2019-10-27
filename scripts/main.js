@@ -1,4 +1,8 @@
 let wrap = document.querySelector(".kb-anim-wrapper")
+let whiteTiles = document.querySelectorAll(".tiles-white .kb-tile")
+let blackTiles = document.querySelectorAll(".tiles-black .kb-tile")
+let tiles = document.querySelectorAll(".kb-tiles .kb-tile")
+
 let y = 0, x = -30, z = 0, minZ = -200, maxZ = 1400
 let firstRunX = 0, firstRunY = 0
 let isHolding = false, firstRun = true
@@ -8,6 +12,59 @@ let speedX, speedY
 let keymappingOn = false
 let wireframeView = false
 
+// window.onload = () => {
+// 	let spawnTl = new TimelineMax()
+// 	spawnTl.from(wrap, 0.7, {ease:Power4.easeOut, z:-500, z:300,  y:300, rotationY : -50,  rotationX : 0 })
+// 	spawnTl.play()
+// }
+
+
+// SET UP
+
+// on va chercher la largeur d'une touche. Soit la largeur de la face avant de n'importe quelle touche
+// toujours dans le process de n'avoir qu'une seule source de vérité (soit les variables scss)
+let whiteTileWidth = parseInt(getComputedStyle(whiteTiles[0].children[5]).getPropertyValue("width"))
+let blackTileWidth = parseInt(getComputedStyle(blackTiles[0].children[5]).getPropertyValue("width"))
+let spacing = 2
+
+// tweenmax pour pouvoir set une transform sans écraser les anciennes
+let c = 0
+whiteTiles.forEach((tile, index) => {
+    // offsetting each tile
+    tile.setAttribute("offset", index * (whiteTileWidth + spacing))
+    TweenMax.set(tile, {x:index * (whiteTileWidth + spacing)})
+    // setting up black tiles
+    if (tile.hasAttribute("black-key")) {
+         // https://images-na.ssl-images-amazon.com/images/I/51BT0jwqW0L._AC_SL1001_.jpg
+         // si on regarde bien les noirs on peut voir qu'elles ont pas toujours la meme position en fonction de leur note.
+         // pour ré, la noir est presque entierement sur la note, pour mi elle est au milieu et pour fa c'est l'inverse de ré
+         // je distingue donc left / middle / right
+        
+        if (tile.hasAttribute("black-keyL")) TweenMax.set(blackTiles[c], {x:((tile.getAttribute("offset")-(blackTileWidth / 2)-spacing) + (-blackTileWidth / 5) )})   
+        if (tile.hasAttribute("black-keyM")) TweenMax.set(blackTiles[c], {x:(tile.getAttribute("offset")-(blackTileWidth / 2)-spacing)})  
+        if (tile.hasAttribute("black-keyR")) TweenMax.set(blackTiles[c], {x:(tile.getAttribute("offset")-(blackTileWidth / 2)-spacing) + (blackTileWidth / 5)})  
+
+        c++
+    }
+})
+
+let notes = "fgabcde".toUpperCase() // do ré mi fa sol la si
+let startOctave = 2
+whiteTiles.forEach((tile, index) => {
+	// soit nb = 1 puis 2 puis 3
+	let nb = 1 * startOctave + Math.floor((index / notes.length))
+	if (index >= notes.length) {
+		let coef = Math.floor(index / notes.length)
+		let i2 = index - (notes.length) * coef
+		tile.setAttribute("note", notes[i2].concat(nb))
+	} else {
+		tile.setAttribute("note", notes[index].concat(nb))
+	}
+})
+
+
+
+// DEPLACEMENT DU PIANO
 
 document.querySelector(".cont:not(.ui)").addEventListener('mousedown', event => {
 	// on détecte que la souris est enfoncé et stocke les positions initiales du curseur
@@ -55,6 +112,18 @@ document.addEventListener('wheel', event => {
     TweenMax.to(wrap, 0.3, {z : -z})
 })
 
+document.addEventListener('keydown', (e) => {
+    if (e.code == "ArrowDown") x+=5
+    if (e.code == "ArrowUp") x -= 5
+    if (e.code == "ArrowLeft") y += 5
+    if (e.code == "ArrowRight") y -= 5
+    TweenMax.to(wrap, 0.1,  {rotationX : x, rotationY : y })
+})
+
+
+
+// UI INTERACTION
+
 
 document.querySelector(".top-view-btn").addEventListener('click', () => {
     x=-80, y=0
@@ -85,49 +154,6 @@ document.querySelector(".keymap-mode-btn").addEventListener('click', () => {
 	document.querySelector(".keymap-mode-btn").innerText = keymappingOn ? "HIDE KEY MAPPING" : "SHOW KEY MAPPING"
 })
 
-
-document.addEventListener('keydown', (e) => {
-    if (e.code == "ArrowDown") x+=5
-    if (e.code == "ArrowUp") x -= 5
-    if (e.code == "ArrowLeft") y += 5
-    if (e.code == "ArrowRight") y -= 5
-    TweenMax.to(wrap, 0.1,  {rotationX : x, rotationY : y })
-})
-
-
-let whiteTiles = document.querySelectorAll(".tiles-white .kb-tile")
-let blackTiles = document.querySelectorAll(".tiles-black .kb-tile")
-let tiles = document.querySelectorAll(".kb-tiles .kb-tile")
-
-
-// on va chercher la largeur d'une touche. Soit la largeur de la face avant de n'importe quelle touche
-// toujours dans le process de n'avoir qu'une seule source de vérité (soit les variables scss)
-let whiteTileWidth = parseInt(getComputedStyle(whiteTiles[0].children[5]).getPropertyValue("width"))
-let blackTileWidth = parseInt(getComputedStyle(blackTiles[0].children[5]).getPropertyValue("width"))
-let spacing = 2
-
-// tweenmax pour pouvoir set une transform sans écraser les anciennes
-
-let c = 0
-whiteTiles.forEach((tile, index) => {
-    // offsetting each tile
-    tile.setAttribute("offset", index * (whiteTileWidth + spacing))
-    TweenMax.set(tile, {x:index * (whiteTileWidth + spacing)})
-    // setting up black tiles
-    if (tile.hasAttribute("black-key")) {
-         // https://images-na.ssl-images-amazon.com/images/I/51BT0jwqW0L._AC_SL1001_.jpg
-         // si on regarde bien les noirs on peut voir qu'elles ont pas toujours la meme position en fonction de leur note.
-         // pour ré, la noir est presque entierement sur la note, pour mi elle est au milieu et pour fa c'est l'inverse de ré
-         // je distingue donc left / middle / right
-        
-        if (tile.hasAttribute("black-keyL")) TweenMax.set(blackTiles[c], {x:((tile.getAttribute("offset")-(blackTileWidth / 2)-spacing) + (-blackTileWidth / 5) )})   
-        if (tile.hasAttribute("black-keyM")) TweenMax.set(blackTiles[c], {x:(tile.getAttribute("offset")-(blackTileWidth / 2)-spacing)})  
-        if (tile.hasAttribute("black-keyR")) TweenMax.set(blackTiles[c], {x:(tile.getAttribute("offset")-(blackTileWidth / 2)-spacing) + (blackTileWidth / 5)})  
-
-        c++
-    }
-})
-
 let chars = 'azertyuiopqsdfghjklmw'
 let charsBlack = 'azetyiopsdghjlm'.toUpperCase()
 
@@ -151,6 +177,12 @@ function keymapping(set = true) {
 
 
 
+
+
+// TOUCHES DU PIANO ET SON
+
+
+
 let tileTl
 let activeKeyTimelines = []
 function keyPress(tile){
@@ -161,12 +193,8 @@ function keyPress(tile){
 	if (createNewTl) {		
 		audios.forEach( sound => {
 			if (sound.tile === tile) {
-				console.log("playing !");
 				sound.audio.currentTime = 0
 				sound.audio.play()
-				sound.audio.addEventListener('loadeddata', () => {
-					console.log("ready ");
-				})
 			}
 		})
 		tileTl = new TimelineMax()
@@ -287,19 +315,7 @@ document.addEventListener('keyup', e => {
 // SOUND
 // https://cdn.discordapp.com/attachments/545905273471107081/637958663767588894/piano-notes.png
 // est-ce que j'ai gagné du temps à ecrire un algo qui place les notes en js plutot que de le faire a la main ? bah non
-let notes = "fgabcde".toUpperCase() // do ré mi fa sol la si
-let startOctave = 2
-whiteTiles.forEach( (tile, index) => {
-	// soit nb = 1 puis 2 puis 3
-	let nb = 1 * startOctave + Math.floor((index / notes.length))
-	if (index >= notes.length) {
-		let coef = Math.floor(index / notes.length)
-		let i2 = index-(notes.length)*coef
-		tile.setAttribute("note", notes[i2].concat(nb))
-	} else {
-		tile.setAttribute("note", notes[index].concat(nb) )
-	}
-})
+
 
 
 let audios = []

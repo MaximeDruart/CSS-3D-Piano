@@ -30,7 +30,7 @@ body {
       transform: rotateX(-30deg); }
       .cont .keyboardBody .kb-anim-wrapper .kb-under .kb {
         position: absolute;
-        background-color: grey;
+        background-color: #444;
         opacity: 0.6;
         border: 1px solid white; }
         .cont .keyboardBody .kb-anim-wrapper .kb-under .kb-zpos {
