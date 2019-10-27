@@ -374,6 +374,7 @@ body {
                         height: $kb-main-lg-height;
                         transform: rotateY(-90deg) translateZ(calc(#{$kb-main-width} / -2));
                         clip-path: polygon(0 0, 100% #{$kb-main-ratio}, 100% 100%, 0 100%);
+                        -webkit-clip-path : polygon(0 0, 100% #{$kb-main-ratio}, 100% 100%, 0 100%);
                     }
 
                     &-xneg {
@@ -383,6 +384,7 @@ body {
                         height: $kb-main-lg-height;
                         transform: rotateY(-90deg) translateZ(calc(#{$kb-main-width} / 2));
                         clip-path: polygon(0 0, 100% #{$kb-main-ratio}, 100% 100%, 0 100%);
+                        -webkit-clip-path: polygon(0 0, 100% #{$kb-main-ratio}, 100% 100%, 0 100%);
                     }
 
                     // top and bottom ( 1000 * 200)
@@ -446,6 +448,7 @@ body {
                         height: $kb-sides-lg-height;
                         transform: rotateY(-90deg) translateZ(calc(#{$kb-sides-width} / -2));
                         clip-path: polygon(0 0, 100% #{$kb-sides-ratio}, 100% 100%, 0 100%);
+                        -webkit-clip-path: polygon(0 0, 100% #{$kb-sides-ratio}, 100% 100%, 0 100%);
                     }
 
                     &-xneg {
@@ -455,6 +458,7 @@ body {
                         height: $kb-sides-lg-height;
                         transform: rotateY(-90deg) translateZ(calc(#{$kb-sides-width} / 2));
                         clip-path: polygon(0 0, 100% #{$kb-sides-ratio}, 100% 100%, 0 100%);
+                        -webkit-clip-path: polygon(0 0, 100% #{$kb-sides-ratio}, 100% 100%, 0 100%);
                     }
 
                     // top and bottom ( 1000 * 200)
@@ -582,6 +586,7 @@ body {
                                 height: $kb-blackTile-height;
                                 transform: rotateY(-90deg) translateZ(calc(#{$kb-blackTile-width} / -2));
                                 clip-path: polygon(0 0, #{$kb-blackTile-ratio} 0, 100% 100%, 0% 100%);
+                                -webkit-clip-path: polygon(0 0, #{$kb-blackTile-ratio} 0, 100% 100%, 0% 100%);
 
                             }
 
@@ -592,6 +597,7 @@ body {
                                 height: $kb-blackTile-height;
                                 transform: rotateY(-90deg) translateZ(calc(#{$kb-blackTile-width} / 2));
                                 clip-path: polygon(0 0, #{$kb-blackTile-ratio} 0, 100% 100%, 0% 100%);
+                                -webkit-clip-path: polygon(0 0, #{$kb-blackTile-ratio} 0, 100% 100%, 0% 100%);
                             }
 
                             // top and bottom ( 1000 * 200)

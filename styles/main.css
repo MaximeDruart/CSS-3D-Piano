@@ -97,14 +97,16 @@ body {
             width: 171px;
             height: 90px;
             transform: rotateY(-90deg) translateZ(calc(670px / -2));
-            clip-path: polygon(0 0, 100% 37.8979255846%, 100% 100%, 0 100%); }
+            clip-path: polygon(0 0, 100% 37.8979255846%, 100% 100%, 0 100%);
+            -webkit-clip-path: polygon(0 0, 100% 37.8979255846%, 100% 100%, 0 100%); }
           .cont .keyboardBody .kb-anim-wrapper .kb-main .kb-xneg {
             top: calc(90px / -2);
             left: calc(171px / -2);
             width: 171px;
             height: 90px;
             transform: rotateY(-90deg) translateZ(calc(670px / 2));
-            clip-path: polygon(0 0, 100% 37.8979255846%, 100% 100%, 0 100%); }
+            clip-path: polygon(0 0, 100% 37.8979255846%, 100% 100%, 0 100%);
+            -webkit-clip-path: polygon(0 0, 100% 37.8979255846%, 100% 100%, 0 100%); }
           .cont .keyboardBody .kb-anim-wrapper .kb-main .kb-yneg {
             top: calc(171px / -2);
             left: calc(670px / -2);
@@ -146,14 +148,16 @@ body {
             width: 300px;
             height: 90px;
             transform: rotateY(-90deg) translateZ(calc(50px / -2));
-            clip-path: polygon(0 0, 100% 66.6666666667%, 100% 100%, 0 100%); }
+            clip-path: polygon(0 0, 100% 66.6666666667%, 100% 100%, 0 100%);
+            -webkit-clip-path: polygon(0 0, 100% 66.6666666667%, 100% 100%, 0 100%); }
           .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-xneg {
             top: calc(90px / -2);
             left: calc(300px / -2);
             width: 300px;
             height: 90px;
             transform: rotateY(-90deg) translateZ(calc(50px / 2));
-            clip-path: polygon(0 0, 100% 66.6666666667%, 100% 100%, 0 100%); }
+            clip-path: polygon(0 0, 100% 66.6666666667%, 100% 100%, 0 100%);
+            -webkit-clip-path: polygon(0 0, 100% 66.6666666667%, 100% 100%, 0 100%); }
           .cont .keyboardBody .kb-anim-wrapper .kb-sides .kb-yneg {
             top: calc(300px / -2);
             left: calc(50px / -2);
@@ -235,14 +239,16 @@ body {
             width: 77.4px;
             height: 20px;
             transform: rotateY(-90deg) translateZ(calc(15px / -2));
-            clip-path: polygon(0 0, 80.6201550388% 0, 100% 100%, 0% 100%); }
+            clip-path: polygon(0 0, 80.6201550388% 0, 100% 100%, 0% 100%);
+            -webkit-clip-path: polygon(0 0, 80.6201550388% 0, 100% 100%, 0% 100%); }
           .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-black .kb-tile .kb-xneg {
             top: calc(20px / -2);
             left: calc(77.4px / -2);
             width: 77.4px;
             height: 20px;
             transform: rotateY(-90deg) translateZ(calc(15px / 2));
-            clip-path: polygon(0 0, 80.6201550388% 0, 100% 100%, 0% 100%); }
+            clip-path: polygon(0 0, 80.6201550388% 0, 100% 100%, 0% 100%);
+            -webkit-clip-path: polygon(0 0, 80.6201550388% 0, 100% 100%, 0% 100%); }
           .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-black .kb-tile .kb-yneg {
             top: calc(77.4px / -2);
             left: calc(15px / -2);

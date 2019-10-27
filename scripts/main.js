@@ -159,6 +159,16 @@ function keyPress(tile){
 		if (tl.tile === tile) createNewTl = false
 	})
 	if (createNewTl) {		
+		audios.forEach( sound => {
+			if (sound.tile === tile) {
+				console.log("playing !");
+				sound.audio.currentTime = 0
+				sound.audio.play()
+				sound.audio.addEventListener('loadeddata', () => {
+					console.log("ready ");
+				})
+			}
+		})
 		tileTl = new TimelineMax()
 		tileTl.onComplete = tileTl.destroy
 		tileTl.to(tile, 0.25, {rotationX : "-6deg", y: "6px"})
@@ -176,10 +186,16 @@ tiles.forEach( tile => {
     // click animation
     tile.addEventListener('mousedown', () => {
 		keyPress(tile)
-		console.log(activeKeyTimelines)
 	})
 	// releasing the tile
 	tile.addEventListener('mouseup', () => {
+		//stop sound
+		audios.forEach(sound => {
+			if (sound.tile === tile) {
+				sound.audio.pause()
+				sound.audio.currentTime =0
+			}
+		})
 		// for each timeline
 		activeKeyTimelines.forEach( (tl, index) => {
 			// if there's a timeline for the tile
@@ -193,6 +209,13 @@ tiles.forEach( tile => {
 	})
 	// or not hovering it anymore with the mouse
 	tile.addEventListener('mouseout', () => {
+		//stop sound
+		audios.forEach(sound => {
+			if (sound.tile === tile) {
+				sound.audio.pause()
+				sound.audio.currentTime = 0
+			}
+		})
 		// for each timeline
 		activeKeyTimelines.forEach((tl, index) => {
 			// if there's a timeline for the tile
@@ -222,6 +245,12 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keyup', e => {
 
 	if (chars.indexOf(e.key) !== -1) {
+		audios.forEach(sound => {
+			if (sound.tile === whiteTiles[chars.indexOf(e.key)]) {
+				sound.audio.pause()
+				sound.audio.currentTime = 0
+			}
+		})
 		activeKeyTimelines.forEach((tl, index) => {
 			// if there's a timeline for the tile
 			if (tl.tile === whiteTiles[chars.indexOf(e.key)]) {
@@ -234,6 +263,12 @@ document.addEventListener('keyup', e => {
 	}
 		
 	if (charsBlack.indexOf(e.key) !== -1) {
+		audios.forEach(sound => {
+			if (sound.tile === blackTiles[charsBlack.indexOf(e.key)]) {
+				sound.audio.pause()
+				sound.audio.currentTime = 0
+			}
+		})
 		activeKeyTimelines.forEach((tl, index) => {
 			// if there's a timeline for the tile
 			if (tl.tile === blackTiles[charsBlack.indexOf(e.key)]) {
@@ -249,3 +284,30 @@ document.addEventListener('keyup', e => {
 
 
 
+// SOUND
+// https://cdn.discordapp.com/attachments/545905273471107081/637958663767588894/piano-notes.png
+// est-ce que j'ai gagné du temps à ecrire un algo qui place les notes en js plutot que de le faire a la main ? bah non
+let notes = "fgabcde".toUpperCase() // do ré mi fa sol la si
+let startOctave = 2
+whiteTiles.forEach( (tile, index) => {
+	// soit nb = 1 puis 2 puis 3
+	let nb = 1 * startOctave + Math.floor((index / notes.length))
+	if (index >= notes.length) {
+		let coef = Math.floor(index / notes.length)
+		let i2 = index-(notes.length)*coef
+		tile.setAttribute("note", notes[i2].concat(nb))
+	} else {
+		tile.setAttribute("note", notes[index].concat(nb) )
+	}
+})
+
+
+let audios = []
+tiles.forEach( tile => {
+	let audio = {
+		audio : new Audio(`sounds/mp3/Piano.mf.${tile.getAttribute("note")}.mp3`),
+		tile : tile
+	} 
+	audio.ready = audio.readyState
+	audios.push(audio)
+})
