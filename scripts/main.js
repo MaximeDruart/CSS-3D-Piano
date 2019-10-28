@@ -11,6 +11,7 @@ let mousex, mousey
 let speedX, speedY
 let keymappingOn = false
 let wireframeView = false
+let qwertyMode =  false
 
 // window.onload = () => {
 // 	let spawnTl = new TimelineMax()
@@ -170,6 +171,18 @@ document.querySelector(".keymap-mode-btn").addEventListener('click', () => {
 	document.querySelector(".keymap-mode-btn").innerText = keymappingOn ? "HIDE KEY MAPPING" : "SHOW KEY MAPPING"
 })
 
+document.querySelector(".qwerty-mode-btn").addEventListener('click', () => {
+	qwertyMode = !qwertyMode
+	if (qwertyMode) {
+		chars = "qwertyuiopasdfghjkl;z"
+		charsBlack = "qwetyiopsdghjl;"
+	} else {
+		chars = 'azertyuiopqsdfghjklmw'
+		charsBlack = 'azetyiopsdghjlm'.toUpperCase()
+	}
+	document.querySelector(".qwerty-mode-btn").innerText = qwertyMode ? "AZERTY MODE" : "QWERTY MODE"
+})
+
 let chars = 'azertyuiopqsdfghjklmw'
 let charsBlack = 'azetyiopsdghjlm'.toUpperCase()
 
@@ -215,7 +228,7 @@ function keyPress(tile){
 		})
 		tileTl = new TimelineMax()
 		tileTl.onComplete = tileTl.destroy
-		tileTl.to(tile, 0.15, {rotationX : "-6deg", y: "6px"})
+		tileTl.fromTo(tile, 0.10, {rotationX : "0deg", y:0},  {rotationX : "-6deg", y: "6px"})
 		tileTl.play()
 		let tempObj = {
 			tile : tile, 
@@ -231,28 +244,11 @@ tiles.forEach( tile => {
     tile.addEventListener('mousedown', () => {
 		keyPress(tile)
 	})
-	// releasing the tile
-	tile.addEventListener('mouseup', () => {
-		//stop sound
-		audios.forEach(sound => {
-			if (sound.tile === tile) {
-				sound.audio.pause()
-				sound.audio.currentTime =0
-			}
-		})
-		// for each timeline
-		activeKeyTimelines.forEach( (tl, index) => {
-			// if there's a timeline for the tile
-			if (tl.tile === tile) {
-				// reverse it
-				tl.timeline.reverse()
-				// and remove the timeline
-				activeKeyTimelines.splice(index, 1)
-			}
-		})
+	tile.addEventListener('touchstart', () => {
+		keyPress(tile)
 	})
-	// or not hovering it anymore with the mouse
-	tile.addEventListener('mouseout', () => {
+	// releasing the tile
+	let keyPressUpHandler = () => {
 		//stop sound
 		audios.forEach(sound => {
 			if (sound.tile === tile) {
@@ -270,8 +266,33 @@ tiles.forEach( tile => {
 				activeKeyTimelines.splice(index, 1)
 			}
 		})
-	})
+	}
+	tile.addEventListener('mouseup', keyPressUpHandler)
+	tile.addEventListener('touchend', keyPressUpHandler)
+	// or not hovering it anymore with the mouse
+	let keyPressOutHandler = () => {
+		//stop sound
+		audios.forEach(sound => {
+			if (sound.tile === tile) {
+				sound.audio.pause()
+				sound.audio.currentTime = 0
+			}
+		})
+		// for each timeline
+		activeKeyTimelines.forEach((tl, index) => {
+			// if there's a timeline for the tile
+			if (tl.tile === tile) {
+				// reverse it
+				tl.timeline.reverse()
+				// and remove the timeline
+				activeKeyTimelines.splice(index, 1)
+			}
+		})
+	}
+	tile.addEventListener('mouseout', keyPressOutHandler)
+	tile.addEventListener('touchcancel', keyPressOutHandler)
 })
+
 
 
 // pressing keyboard key

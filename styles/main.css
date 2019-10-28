@@ -219,8 +219,7 @@ body {
         transform: translateZ(57px) translateY(-42.5px) translateX(-327.5px); }
         .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-black .kb-tile .kb {
           background-color: black;
-          opacity: 0.8;
-          border: 1px solid white; }
+          opacity: 0.8; }
           .cont .keyboardBody .kb-anim-wrapper .kb-tiles.tiles-black .kb-tile .kb-zpos {
             top: calc(25px / -2);
             left: calc(15px / -2);
