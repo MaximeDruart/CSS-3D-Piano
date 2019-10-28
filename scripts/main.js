@@ -1,7 +1,7 @@
-let wrap = document.querySelector(".kb-anim-wrapper")
-let whiteTiles = document.querySelectorAll(".tiles-white .kb-tile")
-let blackTiles = document.querySelectorAll(".tiles-black .kb-tile")
-let tiles = document.querySelectorAll(".kb-tiles .kb-tile")
+const wrap = document.querySelector(".kb-anim-wrapper")
+const whiteTiles = document.querySelectorAll(".tiles-white .kb-tile")
+const blackTiles = document.querySelectorAll(".tiles-black .kb-tile")
+const tiles = document.querySelectorAll(".kb-tiles .kb-tile")
 
 let y = 0, x = -30, z = 0, minZ = -200, maxZ = 1400
 let firstRunX = 0, firstRunY = 0
@@ -23,9 +23,9 @@ let wireframeView = false
 
 // on va chercher la largeur d'une touche. Soit la largeur de la face avant de n'importe quelle touche
 // toujours dans le process de n'avoir qu'une seule source de vérité (soit les variables scss)
-let whiteTileWidth = parseInt(getComputedStyle(whiteTiles[0].children[5]).getPropertyValue("width"))
-let blackTileWidth = parseInt(getComputedStyle(blackTiles[0].children[5]).getPropertyValue("width"))
-let spacing = 2
+const whiteTileWidth = parseInt(getComputedStyle(whiteTiles[0].children[5]).getPropertyValue("width"))
+const blackTileWidth = parseInt(getComputedStyle(blackTiles[0].children[5]).getPropertyValue("width"))
+const spacing = 2
 
 // tweenmax pour pouvoir set une transform sans écraser les anciennes
 let c = 0
@@ -48,11 +48,13 @@ whiteTiles.forEach((tile, index) => {
     }
 })
 
-let notes = "fgabcde".toUpperCase() // do ré mi fa sol la si
-let startOctave = 2
+// https://cdn.discordapp.com/attachments/545905273471107081/637958663767588894/piano-notes.png
+// est-ce que j'ai gagné du temps à ecrire un algo qui place les notes en js plutot que de le faire a la main ? bah non
+const notes = "fgabcde".toUpperCase() // do ré mi fa sol la si
+const startOctave = 2
 whiteTiles.forEach((tile, index) => {
 	// soit nb = 1 puis 2 puis 3
-	let nb = 1 * startOctave + Math.floor((index / notes.length))
+	let nb = 1 * startOctave + Math.floor(index / notes.length)
 	if (index >= notes.length) {
 		let coef = Math.floor(index / notes.length)
 		let i2 = index - (notes.length) * coef
@@ -66,40 +68,54 @@ whiteTiles.forEach((tile, index) => {
 
 // DEPLACEMENT DU PIANO
 
-document.querySelector(".cont:not(.ui)").addEventListener('mousedown', event => {
+function mouseDownHandler(event) {
 	// on détecte que la souris est enfoncé et stocke les positions initiales du curseur
 	// clic gauche ou roue
-    if (event.button == 0 || event.button == 1) {        
-        isHolding = true
-        mousex = event.x
+	if (event.button == 0 || event.button == 1) {
+		isHolding = true
+		mousex = event.x
 		mousey = event.y
 		firstRunY = y
 		firstRunX = x
-    }
-})
+	}
+}
 
-document.addEventListener('mousemove', event => {
-    if (isHolding) {
-        // lorsque la souris est enfoncé, on va ajouter / soustraire aux X/Y actuelles la différence entre la position initiale de la souris et sa position actuelle
-        // axe inversé entre ceux de css 3d et ceux de la souris
-        // l'axe rotationX va correspondre à l'axe Y de la souris et vice versa
-        firstRunY = y - ((mousex - event.x) / 7)
-        firstRunX = x + ((mousey - event.y) / 5)
-        // on applique ensuite ces valeurs.
-        TweenMax.to(wrap, 0.1,  {rotationX : firstRunX, rotationY : firstRunY })
-    }
-    speedX = event.movementX
-    speedY = event.movementY
-})
+function mouseMoveHandler(event) {
+	if (isHolding) {
+		// lorsque la souris est enfoncé, on va ajouter / soustraire aux X/Y actuelles la différence entre la position initiale de la souris et sa position actuelle
+		// axe inversé entre ceux de css 3d et ceux de la souris
+		// l'axe rotationX va correspondre à l'axe Y de la souris et vice versa
+		firstRunY = y - ((mousex - event.x) / 7)
+		firstRunX = x + ((mousey - event.y) / 5)
+		// on applique ensuite ces valeurs.
+		TweenMax.to(wrap, 0.1, {
+			rotationX: firstRunX,
+			rotationY: firstRunY
+		})
+	}
+	speedX = event.movementX
+	speedY = event.movementY
+}
 
-document.addEventListener('mouseup', event => {
-    // lorsque l'utilisateur relache le clic, on actualise nos valeurs x/y et reset nos valeurs temporaires.
-    x = firstRunX
+function mouseUpHandler() {
+	// lorsque l'utilisateur relache le clic, on actualise nos valeurs x/y et reset nos valeurs temporaires.
+	x = firstRunX
 	y = firstRunY
-    firstRunY = 0
-    firstRunX = 0
-    isHolding = false
-})
+	firstRunY = 0
+	firstRunX = 0
+	isHolding = false
+}
+
+document.querySelector(".cont:not(.ui)").addEventListener('mousedown', mouseDownHandler)
+document.querySelector(".cont:not(.ui)").addEventListener('touchstart', mouseDownHandler)
+
+
+document.addEventListener('mousemove', mouseMoveHandler)
+document.addEventListener('touchmove', mouseMoveHandler)
+
+document.addEventListener('mouseup', mouseUpHandler)
+document.addEventListener('touchend', mouseUpHandler)
+
 
 document.addEventListener('wheel', event => {
     if (z>=minZ && z<maxZ) {
@@ -162,11 +178,11 @@ function keymapping(set = true) {
 		whiteTiles.forEach((tile, index) => {
 			// children[2] = face du dessus
 			tile.children[2].innerText = chars[index]
-		});
+		})
 		blackTiles.forEach((tile, index) => {
 			// children[2] = face du dessus
 			tile.children[2].innerText = charsBlack[index]
-		});
+		})
 	} else {
 		tiles.forEach(tile => {
 			tile.children[2].innerText = ""
@@ -199,7 +215,7 @@ function keyPress(tile){
 		})
 		tileTl = new TimelineMax()
 		tileTl.onComplete = tileTl.destroy
-		tileTl.to(tile, 0.25, {rotationX : "-6deg", y: "6px"})
+		tileTl.to(tile, 0.15, {rotationX : "-6deg", y: "6px"})
 		tileTl.play()
 		let tempObj = {
 			tile : tile, 
@@ -313,9 +329,6 @@ document.addEventListener('keyup', e => {
 
 
 // SOUND
-// https://cdn.discordapp.com/attachments/545905273471107081/637958663767588894/piano-notes.png
-// est-ce que j'ai gagné du temps à ecrire un algo qui place les notes en js plutot que de le faire a la main ? bah non
-
 
 
 let audios = []
