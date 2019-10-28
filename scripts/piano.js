@@ -350,7 +350,6 @@ class UserInterface {
 	}
 }
 
-
 const piano = new Piano()
 piano.init()
 const ui = new UserInterface(piano)
