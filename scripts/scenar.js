@@ -1,9 +1,4 @@
-// TODO :
-// - Clean transitions between levels (especially going backwards, which will require a lot of work for it to be clean as there are a lot of callbacks and tls to manage) -> first run system? 
-// - Design
-// -Maintain a tutorial timelines array
-
-
+// tutorial class regrouping every timelines and ui elements for the tutorial. not much to say. mostly animations.
 class Scenario {
     constructor() {
         this.continueButton = document.querySelector(".continue-btn")
@@ -41,7 +36,7 @@ class Scenario {
         this.activeLevel = 1
         this.slideValueMin = 0
         this.slideValueMax = 8000 // idk
-        this.slideValue =
+        this.slideValue = 200
         // could work for going backwards, playing only the timeline and avoiding callbacks.
         this.tutorialFunctionsWIP = [
             {
@@ -94,16 +89,37 @@ class Scenario {
 
         document.querySelector(".last").addEventListener('click', () => {this.beforeLevelHandler()} )
         document.querySelector(".next").addEventListener('click', () => {this.nextLevelHandler()} )
-
+        document.querySelector(".html").addEventListener('click', () => {this.switchHTMLCSS("html") })
+        document.querySelector(".css").addEventListener('click', () => {this.switchHTMLCSS("css") })
+        document.querySelector(".replay").addEventListener('click', () => {this.replay() })
         // this.range = new Powerange(document.querySelector(".slide")) doesn't work for some reasons.
     }
 
+
+    // WIP
     updateSlideValue() { 
-        let minDOM = document.querySelector(".start-value")
+        let slideDOM = document.querySelector(".slide .line")
+        let slideRect = slideDOM.getBoundingClientRect()
+        console.log(slideDOM.clientWidth)
         let actualDOM = document.querySelector(".actual-value")
         let actualDOMText = document.querySelector(".actual-value span")
-        let maxDOM = document.querySelector(".end-value")
+        let isMoving, startX
 
+        actualDOMText.addEventListener('mousedown', event => {
+            isMoving = true
+            startX = event.x
+        })
+        actualDOMText.addEventListener('mousemove', event => {
+            console.log(event.x / slideDOM.clientWidth)
+            let diff = event.x - startX
+            if (isMoving) {
+                TweenMax.set(actualDOM, {x:diff})
+            }
+        })
+        document.querySelector(".left").addEventListener('mouseup', event => {
+            isMoving = false
+            this.slideValue = startX
+        })
     }
 
     beforeLevelHandler() {
@@ -133,10 +149,24 @@ class Scenario {
         this.updateContent()
     }
 
+    replay(){
+        this.tutorialFunctions[this.activeLevel-1]()
+    }
+
     updateContent() {
         document.querySelector(".right .right-title-content").innerText = this.titles[this.titleActive]
         document.querySelector(".right .right-description p").innerText = this.descriptions[this.descriptionsActive]
         document.querySelector(".page-number-active").innerText = this.activeLevel + " : "
+    }
+
+    switchHTMLCSS(str){
+        if (str === "html") {
+            document.querySelector(".html-content").classList.remove("hiddenDisp")
+            document.querySelector(".css-content").classList.add("hiddenDisp")
+        } else {
+            document.querySelector(".css-content").classList.remove("hiddenDisp")
+            document.querySelector(".html-content").classList.add("hiddenDisp")
+        }
     }
 
 
@@ -179,7 +209,7 @@ class Scenario {
     
     cubeGen(){
         piano.movementEnabled = false, piano.movementEnabledX = false
-        this.cube = new CSS3DItem(".cube-wrap", ".left")
+        this.cube = new CSS3DItem(".left-cube-wrap", ".left")
         this.cube.movementEnabled = false, this.cube.movementEnabledX = false
     }
 
@@ -189,7 +219,7 @@ class Scenario {
         this.tutorial1Tl.addLabel("sync")
         this.tutorial1Tl.from(this.cube.wrap.children, 0.8, {opacity : 0}, "sync")
         this.tutorial1Tl.from(this.cube.wrap, 0.8, {z:-200}, "sync")
-        this.tutorial1Tl.to(this.cube.wrap.children, 0.8, {border:"1px solid rgba(0, 0, 0, 0.23)", innerText : ""}, "sync")
+        this.tutorial1Tl.to(this.cube.wrap.children, 0.8, {border:"1px solid rgba(0, 0, 0, 0.60)", innerText : ""}, "sync")
         this.cube.selfRotate(360 , 360 , 0 , 8)
         this.leftItemActive = this.cube
         this.tutorial1Tl.play()

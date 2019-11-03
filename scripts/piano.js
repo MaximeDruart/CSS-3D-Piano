@@ -1,3 +1,4 @@
+// javascript for our 3d items : mainly for moving around items / setting properties
 class CSS3DItem {
 	constructor(wrapper, container) {
 		this.wrap = document.querySelector(wrapper)
@@ -18,7 +19,10 @@ class CSS3DItem {
 		this.mousey
 		this.selfRotationTl
 
+		// keyboard movement
 		document.addEventListener('keydown', event => { if (this.movementEnabled) this.kbMovementHandler(event)}, false)
+		
+		// moving around the item , zooming in/out
 		this.itemContainer.addEventListener('mousedown', event => {this.mouseDownHandler(event)}, false)
 		this.itemContainer.addEventListener('touchstart', event => {this.mouseDownHandler(event)}, false)
 		document.addEventListener('mousemove', event => {this.mouseMoveHandler(event)}, false)
@@ -66,9 +70,9 @@ class CSS3DItem {
 					rotationY: this.firstRunY
 				})
 			} else if(this.movementEnabledX) {
-				TweenMax.to(this.wrap, 0.1, {
-					rotationX: this.firstRunX
-				})
+				// TweenMax.to(this.wrap, 0.1, {
+				// 	rotationX: this.firstRunX
+				// })
 			}
 		}
 	}
@@ -111,6 +115,8 @@ class CSS3DItem {
 
 }
 
+
+// class extension for piano specific features (playing keys, sound, etc)
 class Piano extends CSS3DItem {
 	constructor(wrapper, container) {
 		super(wrapper, container)
@@ -184,6 +190,7 @@ class Piano extends CSS3DItem {
 		})
 	}
 
+	// setting up all the keys on the keyboard
 	keysSetup() {
 		let c = 0
 		this.whiteTiles.forEach((tile, index) => {
@@ -245,6 +252,8 @@ class Piano extends CSS3DItem {
 		}
 	}
 
+	// creating a timeline each time a key is pressed and adding it to activeKeyTimelines.
+	// this system allows for multiple timelines being run simultaneously
 	keyPress(tile) {
 		let createNewTl = true
 		this.activeKeyTimelines.forEach(tl => {
@@ -275,7 +284,7 @@ class Piano extends CSS3DItem {
 		}
 	}
 
-	// releasing the tile
+	// when the key is released, timeline is reversed then destroyed
 	keyPressUpHandler(event, tile) {
 		//stop sound
 		this.audios.forEach(sound => {
@@ -296,6 +305,7 @@ class Piano extends CSS3DItem {
 		})
 	}
 
+	// same but keyboard version
 	keyReleaseHandler(e) {
 		if (this.chars.indexOf(e.key) !== -1) {
 			this.audios.forEach(sound => {
@@ -335,6 +345,8 @@ class Piano extends CSS3DItem {
 	}
 }
 
+
+// interface buttons, mostly event listeners and funny timelines
 class UserInterface {
 	constructor(pianoParam) {
 		this.keymappingOn = false

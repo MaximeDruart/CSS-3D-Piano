@@ -1,25 +1,25 @@
-// @use 'functions' as *;  // tentative d'importation de scss pour split un peu les fichiers. apparemment ca marche ap
+// @use 'functions' as *;  // import is deprecated but @use doesn't seem to work so idk
 
 
-// pour des raisons personnelles j'ai chopé des fonctions scss sur ces sites
+// functions needed for trigonometry
 // https://css-tricks.com/snippets/sass/power-function/
 // https://css-tricks.com/snippets/sass/correctly-adding-unit-number/
 // https://css-tricks.com/snippets/sass/strip-unit-function/
 
-// trigo
+// trigonometrical / inverse trignometrical functions needed for variables operations
 // https://www.unindented.org/blog/trigonometry-in-sass/
 // http://thesassway.com/advanced/inverse-trigonometric-functions-with-sass
 
 @import 'functions';
 
-// LE MOT CLE C'EST  M O D U L A B I L I T E 
-// always width * length * height
+// i tried to make the code as modular as possible.
 
-// changer ces valeurs change tout le piano
+// Changing these properties change the whole piano and i'm quite happy about it
 // maintenant comment les changer dynamiquement sachant qu'elles disparaissent lorsqu'elles sont processed en css.
-// PETIT A (a) : tout refaire avec des variables css MAIS ca peut pas marcher parce que j'ai besoin des fonctions au dessus qui ne peuvent pas exister en css
-// PETIT B (b) : exporter toutes les variables vers du js et les set manuellement (chiant, long, peu efficace)
-// PETIT C (c) : abandonner l'idée de changer la taille du piano en live et ca me foutrait bien le seum d'avoir tout fait archi modulable pour quasiment rien.
+// Now i'd like to dynamically change them but, as they only exist in scss and disappear when processed, it's impossible to get them in js
+// OPTION A (a) : redo everything with css variables (which i can get thru js) but i'd lose the trigonometrical functions
+// PETIT B (b) : export every variable to js and set them manually (unhealthy at the very least)
+// PETIT C (c) : forget about it
 // PETIT D (d) : ???
 $kb-final-width : 770px;
 $kb-final-length :300px;
@@ -33,7 +33,7 @@ $kb-tile-to-main-ratio : 0.57; // valeur arbitraire pour que ca soit joli :)
 $kb-main-length :$kb-final-length*$kb-tile-to-main-ratio; 
 $kb-main-lg-height: $kb-final-height - $kb-under-height;
 
-// ON MODULE ON MODULE
+// the 2 side pieces, which are trapezoids. Made me go through high school maths again.
 $kb-sides-height : $kb-final-height - $kb-under-height;
 $kb-sides-lg-height : $kb-main-lg-height;
 $kb-sides-sm-height : 30px;
@@ -50,8 +50,7 @@ $kb-sides-angle : acos($kb-sides-cos, deg, $default-threshold);
 // $kb-tiles-width : 800px;
 $kb-tiles-length :$kb-final-length - $kb-main-length;
 
-//on doit le mettre apres pour le scss sinon voila
-// la hauteur du petit coté de la base principale. encore besoin de trigo pour le calculer
+// the main block, also a trapezoid. its measurements are based on the sides
 $kb-main-width : $kb-final-width - (2*$kb-sides-width);
 $kb-main-sm-height : $kb-main-lg-height - $kb-main-length / tan($kb-sides-angle);
 $kb-main-diff : $kb-main-lg-height - $kb-main-sm-height;
@@ -159,6 +158,12 @@ body {
     align-items: center;
 }
 
+.hiddenDisp{
+    display:none !important;
+}
+
+
+
 .cont {
     color: $kb-blackTile-ratio; // testing
     position: relative;
@@ -234,6 +239,7 @@ body {
             align-items: center;
         }
     }
+ 
 
     .tutorialInterface {
         position: absolute;
@@ -248,7 +254,7 @@ body {
         align-items: center;
 
         .left{
-            width:37%;
+            width:35%;
             height : 100%;
             position: relative;
             display: flex;
@@ -306,7 +312,6 @@ body {
                         height: $cube-width;
                         top:-$cube-width / 2;
                         left:-$cube-width / 2;
-                        border:1px solid grey;
     
                         &-zpos {
                             transform: rotateX(0deg) translateZ(calc(#{$cube-width} / 2));
@@ -374,7 +379,7 @@ body {
         }
 
         .center-line{
-            width:1%;
+            width:3%;
             height:92%;
             display: flex;
             flex-flow: column nowrap;
@@ -385,7 +390,7 @@ body {
             span{
                 transform: rotate(-90deg);
                 display: inline-block;
-                font-size: 27px;
+                font-size: 32px;
             }
 
             .line{
@@ -405,17 +410,33 @@ body {
             width : 60%;
             height : 100%;
             padding:20px;
+            padding-left:3%;
 
             .right-title{
+                height: 18%;
+                width: 100%;
                 font-family: 'acronym_extraBold';
-                font-size:45px;
+                font-size:3.5rem;
+                margin-left:-3%;
 
                 .page-number-active{
                     @include wierd-border-right(150%, 110%);
                 }
             }
             .right-description {
+                height: 25%;
+                width: 100%;
                 font-size : 16px;
+                padding-bottom : 35px;
+                
+                &-content{
+                    margin-bottom : 0;
+                }
+
+                .read-more{
+                    margin-top: 0;
+                    font-family: 'acronym_extraBold';
+                }
             }
 
             .editor {
@@ -441,12 +462,14 @@ body {
                         height: 35px;
                         background : white;
                         z-index:3;
-
+                        
                         .html-wrap, .css-wrap{
-                            border:4px solid black;
+                            user-select:none ;
+                            border:3px solid black;
                             width:80%;
                             height:80%;
                             text-align: center;
+                            cursor:pointer;
                         }
                     }
 
@@ -471,7 +494,7 @@ body {
                     }
 
                     .css-content{
-                        display:none;
+                        // display:none;
                     }
                 }
 
@@ -489,7 +512,7 @@ body {
                 @include flex-row-align-center;
                 justify-content: space-between;
                 width:80%;
-                height: 20%;
+                height: 13%;
                 margin:0 auto;
 
                 .last, .next{
