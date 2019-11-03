@@ -1,10 +1,15 @@
+@font-face {
+  font-family: "acronym_bold";
+  src: url("../fonts/Acronym-Bold.ttf"); }
+@font-face {
+  font-family: "acronym_extraBold";
+  src: url("../fonts/Acronym-ExtraBold.ttf"); }
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', 'Arial', sans-serif;
   font-size: 14px;
-  color: #444;
-  overflow: hidden; }
+  overflow: hidden;
+  font-family: "acronym_bold"; }
 
 * {
   box-sizing: border-box; }
@@ -17,6 +22,372 @@ body {
   .cont * {
     transform-style: preserve-3d;
     user-select: none; }
+  .cont .ui {
+    display: none; }
+  .cont .header {
+    width: 86vw;
+    height: 5vh;
+    border: 1px solid black;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 auto; }
+    .cont .header-left {
+      width: 45%;
+      height: 100%;
+      display: flex;
+      align-items: center; }
+    .cont .header-right {
+      width: 15%;
+      height: 100%;
+      display: flex;
+      align-items: center; }
+      .cont .header-right a img {
+        height: 30px;
+        width: auto; }
+  .cont .title {
+    position: absolute;
+    width: 80vw;
+    height: 80vh;
+    top: calc(50% - 80vh / 2);
+    left: calc(50% - 80vw / 2);
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    align-items: center; }
+    .cont .title .upper {
+      font-size: 40px; }
+    .cont .title .lower {
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: center; }
+  .cont .tutorialInterface {
+    position: absolute;
+    width: 95vw;
+    height: 80vh;
+    top: calc(50% - 80vh / 2);
+    left: calc(50% - 95vw / 2);
+    display: none;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    align-items: center; }
+    .cont .tutorialInterface .left {
+      width: 37%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: center;
+      justify-content: space-between; }
+      .cont .tutorialInterface .left .options {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between;
+        width: 90%;
+        height: 20%; }
+        .cont .tutorialInterface .left .options .wireframe-mode {
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center; }
+          .cont .tutorialInterface .left .options .wireframe-mode .on-style {
+            z-index: -1;
+            position: relative; }
+            .cont .tutorialInterface .left .options .wireframe-mode .on-style::before {
+              box-sizing: border-box;
+              pointer-events: none;
+              content: "";
+              position: absolute;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 110%;
+              height: 100%;
+              border: 3px solid black;
+              z-index: -2; }
+            .cont .tutorialInterface .left .options .wireframe-mode .on-style::after {
+              box-sizing: border-box;
+              pointer-events: none;
+              content: "";
+              position: absolute;
+              left: -25%;
+              top: 50%;
+              transform: translate(-50%, -50%);
+              width: 110%;
+              height: 65%;
+              background: white;
+              z-index: -1; }
+            .cont .tutorialInterface .left .options .wireframe-mode .on-style::after {
+              right: -25%;
+              left: 100%; }
+          .cont .tutorialInterface .left .options .wireframe-mode .off-style {
+            color: white;
+            -webkit-text-stroke: 2px solid black; }
+        .cont .tutorialInterface .left .options .replay {
+          z-index: -1;
+          position: relative;
+          height: 28px;
+          line-height: 28px; }
+          .cont .tutorialInterface .left .options .replay::before {
+            box-sizing: border-box;
+            pointer-events: none;
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130%;
+            height: 105%;
+            border: 3px solid black;
+            z-index: -2; }
+          .cont .tutorialInterface .left .options .replay::after {
+            box-sizing: border-box;
+            pointer-events: none;
+            content: "";
+            position: absolute;
+            left: -25%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 130%;
+            height: 65%;
+            background: white;
+            z-index: -1; }
+      .cont .tutorialInterface .left .cube {
+        position: absolute;
+        perspective: 800px;
+        top: 50%;
+        left: 50%; }
+        .cont .tutorialInterface .left .cube .cube-caption {
+          opacity: 0.7;
+          position: absolute;
+          left: 20%;
+          top: -15vh;
+          width: 22vw; }
+        .cont .tutorialInterface .left .cube .cube-wrap .cube-side {
+          position: absolute;
+          width: 200px;
+          height: 200px;
+          top: -100px;
+          left: -100px;
+          border: 1px solid grey; }
+          .cont .tutorialInterface .left .cube .cube-wrap .cube-side-zpos {
+            transform: rotateX(0deg) translateZ(calc(200px / 2)); }
+          .cont .tutorialInterface .left .cube .cube-wrap .cube-side-zneg {
+            transform: rotateX(180deg) translateZ(calc(200px / 2)); }
+          .cont .tutorialInterface .left .cube .cube-wrap .cube-side-xpos {
+            transform: rotateY(90deg) translateZ(calc(200px / 2)); }
+          .cont .tutorialInterface .left .cube .cube-wrap .cube-side-xneg {
+            transform: rotateY(-90deg) translateZ(calc(200px / 2)); }
+          .cont .tutorialInterface .left .cube .cube-wrap .cube-side-yneg {
+            transform: rotateX(-90deg) translateZ(calc(200px / 2)); }
+          .cont .tutorialInterface .left .cube .cube-wrap .cube-side-ypos {
+            transform: rotateX(90deg) translateZ(calc(200px / 2)); }
+      .cont .tutorialInterface .left .slide {
+        width: 90%;
+        height: 20%;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between; }
+        .cont .tutorialInterface .left .slide .line {
+          position: relative;
+          width: 75%;
+          height: 2px;
+          background-color: black; }
+          .cont .tutorialInterface .left .slide .line .actual-value {
+            position: absolute;
+            top: calc(50% - (30px / 2));
+            left: calc(50% - (150px / 2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 130px;
+            height: 30px;
+            z-index: 2;
+            background-color: white;
+            font-size: 18px;
+            cursor: pointer; }
+        .cont .tutorialInterface .left .slide .start-value, .cont .tutorialInterface .left .slide .end-value {
+          font-family: 'acronym_extraBold'; }
+    .cont .tutorialInterface .center-line {
+      width: 1%;
+      height: 92%;
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: center;
+      justify-content: space-between;
+      align-self: flex-start; }
+      .cont .tutorialInterface .center-line span {
+        transform: rotate(-90deg);
+        display: inline-block;
+        font-size: 27px; }
+      .cont .tutorialInterface .center-line .line {
+        order: -1;
+        width: 4px;
+        height: 78%;
+        background-color: black; }
+    .cont .tutorialInterface .right {
+      width: 60%;
+      height: 100%;
+      padding: 20px; }
+      .cont .tutorialInterface .right * {
+        user-select: text; }
+      .cont .tutorialInterface .right .right-title {
+        font-family: 'acronym_extraBold';
+        font-size: 45px; }
+        .cont .tutorialInterface .right .right-title .page-number-active {
+          z-index: -1;
+          position: relative; }
+          .cont .tutorialInterface .right .right-title .page-number-active::before {
+            box-sizing: border-box;
+            pointer-events: none;
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150%;
+            height: 110%;
+            border: 3px solid black;
+            z-index: -2; }
+          .cont .tutorialInterface .right .right-title .page-number-active::after {
+            box-sizing: border-box;
+            pointer-events: none;
+            content: "";
+            position: absolute;
+            left: -25%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 150%;
+            height: 65%;
+            background: white;
+            z-index: -1; }
+          .cont .tutorialInterface .right .right-title .page-number-active::after {
+            right: -25%;
+            left: 100%; }
+      .cont .tutorialInterface .right .right-description {
+        font-size: 16px; }
+      .cont .tutorialInterface .right .editor {
+        width: 100%;
+        border: 4px solid black;
+        height: 40%;
+        position: relative;
+        padding: 20px; }
+        .cont .tutorialInterface .right .editor .nav {
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          justify-content: space-around;
+          position: absolute;
+          width: 200px;
+          height: 35px;
+          top: -20px;
+          left: 20px; }
+          .cont .tutorialInterface .right .editor .nav .html, .cont .tutorialInterface .right .editor .nav .css {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50%;
+            height: 35px;
+            background: white;
+            z-index: 3; }
+            .cont .tutorialInterface .right .editor .nav .html .html-wrap, .cont .tutorialInterface .right .editor .nav .html .css-wrap, .cont .tutorialInterface .right .editor .nav .css .html-wrap, .cont .tutorialInterface .right .editor .nav .css .css-wrap {
+              border: 4px solid black;
+              width: 80%;
+              height: 80%;
+              text-align: center; }
+          .cont .tutorialInterface .right .editor .nav .html {
+            transform: translateX(5px); }
+          .cont .tutorialInterface .right .editor .nav .css {
+            transform: translateX(-5px); }
+        .cont .tutorialInterface .right .editor .content {
+          width: 100%;
+          height: 100%; }
+          .cont .tutorialInterface .right .editor .content .html-content, .cont .tutorialInterface .right .editor .content .css-content {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: calc(100% - 0px);
+            height: calc(100% - 0px); }
+          .cont .tutorialInterface .right .editor .content .css-content {
+            display: none; }
+        .cont .tutorialInterface .right .editor .up {
+          position: absolute;
+          right: 10px;
+          top: 10px;
+          border: 2px solid black;
+          width: 50px;
+          height: 50px; }
+      .cont .tutorialInterface .right .nav {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between;
+        width: 80%;
+        height: 20%;
+        margin: 0 auto; }
+        .cont .tutorialInterface .right .nav .last, .cont .tutorialInterface .right .nav .next {
+          text-align: center;
+          width: 45px;
+          height: 30px;
+          line-height: 30px;
+          cursor: pointer; }
+        .cont .tutorialInterface .right .nav .last {
+          z-index: -1;
+          position: relative; }
+          .cont .tutorialInterface .right .nav .last::before {
+            box-sizing: border-box;
+            pointer-events: none;
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110%;
+            height: 100%;
+            border: 3px solid black;
+            z-index: -2; }
+          .cont .tutorialInterface .right .nav .last::after {
+            box-sizing: border-box;
+            pointer-events: none;
+            content: "";
+            position: absolute;
+            left: -25%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 110%;
+            height: 65%;
+            background: white;
+            z-index: -1; }
+        .cont .tutorialInterface .right .nav .next {
+          z-index: -1;
+          position: relative; }
+          .cont .tutorialInterface .right .nav .next::before {
+            box-sizing: border-box;
+            pointer-events: none;
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110%;
+            height: 100%;
+            border: 3px solid black;
+            z-index: -2; }
+          .cont .tutorialInterface .right .nav .next::after {
+            box-sizing: border-box;
+            pointer-events: none;
+            content: "";
+            position: absolute;
+            left: -25%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 110%;
+            height: 65%;
+            background: white;
+            z-index: -1; }
+          .cont .tutorialInterface .right .nav .next::after {
+            right: -25%;
+            left: 100%; }
+        .cont .tutorialInterface .right .nav .completion {
+          font-family: 'acronym_extraBold';
+          font-size: 30px; }
   .cont .keyboardBody {
     position: absolute;
     left: 50%;
